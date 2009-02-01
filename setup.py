@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.authentication',
-      version = '3.5.0a2dev',
+      version = '3.5.0a2',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Pluggable Authentication Utility',
@@ -40,7 +40,7 @@ setup(name='zope.app.authentication',
         + '\n\n' +
         read('CHANGES.txt')
         ),
-      url='http://cheeseshop.python.org/pypi/zope.app.authentication',
+      url='http://pypi.python.org/pypi/zope.app.authentication',
       license='ZPL 2.1',
       classifiers = [
           'Development Status :: 5 - Production/Stable',
