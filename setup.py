@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.authentication',
-      version = '3.5.0a3dev',
+      version = '3.5.0',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Pluggable Authentication Utility',
@@ -78,6 +78,7 @@ setup(name='zope.app.authentication',
                         'zope.schema',
                         'zope.security',
                         'zope.session',
+                        'zope.site',
                         'zope.traversing',
                         'ZODB3',
                         ],
