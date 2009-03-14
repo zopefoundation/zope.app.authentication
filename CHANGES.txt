@@ -2,12 +2,12 @@
 Changes
 =======
 
-3.6.0 (unreleased)
+3.6.0 (2009-03-14)
 ------------------
 
 * Separate the presentation template and camefrom/redirection logic for the
   ``loginForm.html`` view. Now the logic is contained in the
-  ``zope.app.authentication.browser.session.LoginForm`` class.
+  ``zope.app.authentication.browser.loginform.LoginForm`` class.
 
 * Fix login form redirection failure in some cases with Python 2.6.
 
