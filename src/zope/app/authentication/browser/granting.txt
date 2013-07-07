@@ -150,7 +150,7 @@ Now that we have a selected principal, then
 and now the `view.principal` is set:
 
   >>> view.principal
-  'jim'
+  u'jim'
 
 Now we should have a list of role and permission widgets, and all of them
 should be unset, because do not have any settings for 'jim'.
