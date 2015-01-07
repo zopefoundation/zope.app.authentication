@@ -716,6 +716,7 @@ queriables::
 Before we illustrate how an authenticator is used by the PAU to search for
 principals, we need to setup an adapter used by PAU::
 
+  >>> import zope.app.authentication.authentication
   >>> provideAdapter(
   ...     authentication.authentication.QuerySchemaSearchAdapter,
   ...     provides=interfaces.IQueriableAuthenticator)
