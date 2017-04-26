@@ -76,7 +76,7 @@ we'll create a sample authentication service:
   ...             info = self.groups.principalInfo(id)
   ...             if info is None:
   ...                raise PrincipalLookupError(id)
-  ...         principal = Principal(self.prefix+info.id, 
+  ...         principal = Principal(self.prefix+info.id,
   ...                               info.title, info.description)
   ...         setGroupsForPrincipal(PrincipalCreatedEvent(self, principal))
   ...         return principal
@@ -189,8 +189,7 @@ Groups cannot contain cycles:
   ... # doctest: +NORMALIZE_WHITESPACE
   Traceback (most recent call last):
   ...
-  GroupCycle: (u'auth.group.G1', 
-               ['auth.p2', u'auth.group.G1', u'auth.group.G2'])
+  zope.pluggableauth.plugins.groupfolder.GroupCycle: ('auth.group.G2', ['auth.group.G2', 'auth.group.G1'])
 
 Trying to do so does not fire an event.
 
@@ -401,7 +400,7 @@ Limitation
 
 The current group-folder design has an important limitation!
 
-There is no point in assigning principals to a group 
+There is no point in assigning principals to a group
 from a group folder unless the principal is from the same pluggable
 authentication utility.
 

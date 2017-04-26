@@ -26,7 +26,7 @@ from zope.security.permission import Permission
 from zope.security.interfaces import IPermission
 
 from zope.app.testing import ztapi
-from zope.app.component.testing import PlacefulSetup
+from zope.component.testing import PlacelessSetup as PlacefulSetup
 
 from zope.securitypolicy.role import Role
 from zope.securitypolicy.interfaces import IRole

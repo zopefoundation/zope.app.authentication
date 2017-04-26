@@ -13,14 +13,29 @@
 ##############################################################################
 """zope.app.authentication common test related classes/functions/objects.
 
-$Id$
 """
 
 __docformat__ = "reStructuredText"
 
-import os
-from zope.app.testing.functional import ZCMLLayer
 
-AppAuthenticationLayer = ZCMLLayer(
-    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
-    __name__, 'AppAuthenticationLayer', allow_teardown=True)
+
+from zope.testbrowser.wsgi import TestBrowserLayer
+from zope.app.wsgi.testlayer import BrowserLayer
+import zope.app.authentication
+
+class _AppAuthenticationBrowserLayer(TestBrowserLayer,
+                                     BrowserLayer):
+
+    def setUp(self):
+        # Typically this would be done by zope.app.principalannotation's
+        # bootstrap.zcml but we don't have a dep on that.
+        super(_AppAuthenticationBrowserLayer, self).setUp()
+        from zope.principalannotation.utility import PrincipalAnnotationUtility
+        from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
+        from zope import component
+        component.getGlobalSiteManager().registerUtility(PrincipalAnnotationUtility(),
+                                                         IPrincipalAnnotationUtility)
+
+
+AppAuthenticationLayer = _AppAuthenticationBrowserLayer(zope.app.authentication,
+                                                        allowTearDown=True)

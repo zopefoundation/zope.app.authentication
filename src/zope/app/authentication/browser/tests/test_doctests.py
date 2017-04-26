@@ -22,24 +22,48 @@ import re
 import unittest
 import doctest
 from zope.testing import renormalizing
-from zope.app.testing.setup import placefulSetUp, placefulTearDown
+#from zope.app.testing.setup import placefulSetUp, placefulTearDown
 import transaction
 from zope.interface import directlyProvides
 from zope.exceptions.interfaces import UserError
-from zope.app.testing import functional
+#from zope.app.testing import functional
 from zope.pluggableauth.factories import Principal
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.testing import AppAuthenticationLayer
+from zope.app.wsgi.testlayer import http
+
+# def schemaSearchSetUp(self):
+#     placefulSetUp(site=True)
+
+# def schemaSearchTearDown(self):
+#     placefulTearDown()
+
+from webtest import TestApp
+
+class FunkTest(unittest.TestCase):
+
+    layer = AppAuthenticationLayer
+
+    def setUp(self):
+        super(FunkTest, self).setUp()
+        self._testapp = TestApp(self.layer.make_wsgi_app())
 
 
-def schemaSearchSetUp(self):
-    placefulSetUp(site=True)
+    def publish(self, path, basic=None, form=None, headers=None):
+        assert basic
+        self._testapp.authorization = ('Basic', tuple(basic.split(':')))
 
-def schemaSearchTearDown(self):
-    placefulTearDown()
+        env = {'wsgi.handleErrors': False}
+        if form:
+            response = self._testapp.post(path, params=form,
+                                          extra_environ=env, headers=headers)
+        else:
+            response = self._testapp.get(path, extra_environ=env, headers=headers)
+        return response
 
-class FunkTest(functional.BrowserTestCase):
+    def getRootFolder(self):
+        return self.layer.getRootFolder()
 
     def test_copypaste_duplicated_id_object(self):
 
@@ -121,31 +145,40 @@ class FunkTest(functional.BrowserTestCase):
 
 
 checker = renormalizing.RENormalizing([
-    (re.compile(r"HTTP/1\.1 200 .*"), "HTTP/1.1 200 OK"),
-    (re.compile(r"HTTP/1\.1 303 .*"), "HTTP/1.1 303 See Other"),
-    (re.compile(r"HTTP/1\.1 401 .*"), "HTTP/1.1 401 Unauthorized"),
+    (re.compile(r"HTTP/1\.0 200 .*"), "HTTP/1.1 200 OK"),
+    (re.compile(r"HTTP/1\.0 303 .*"), "HTTP/1.1 303 See Other"),
+    (re.compile(r"HTTP/1\.0 401 .*"), "HTTP/1.1 401 Unauthorized"),
     ])
 
 
 def test_suite():
-    FunkTest.layer = AppAuthenticationLayer
-    principalfolder = functional.FunctionalDocFileSuite(
-        '../principalfolder.txt', checker=checker)
-    principalfolder.layer = AppAuthenticationLayer
-    groupfolder = functional.FunctionalDocFileSuite(
-        '../groupfolder.txt', checker=checker)
-    groupfolder.layer = AppAuthenticationLayer
-    pau_prefix_and_searching = functional.FunctionalDocFileSuite(
-        '../pau_prefix_and_searching.txt', checker=checker)
-    pau_prefix_and_searching.layer = AppAuthenticationLayer
-    group_searching_with_empty_string = functional.FunctionalDocFileSuite(
-        '../group_searching_with_empty_string.txt', checker=checker)
-    group_searching_with_empty_string.layer = AppAuthenticationLayer
-    special_groups = functional.FunctionalDocFileSuite(
-        '../special-groups.txt', checker=checker)
-    special_groups.layer = AppAuthenticationLayer
-    issue663 = functional.FunctionalDocFileSuite('../issue663.txt')
-    issue663.layer = AppAuthenticationLayer
+    flags = (doctest.NORMALIZE_WHITESPACE
+             | renormalizing.IGNORE_EXCEPTION_MODULE_IN_PYTHON2
+             | doctest.ELLIPSIS)
+
+    def _http(query_str, *args, **kwargs):
+        wsgi_app = AppAuthenticationLayer.make_wsgi_app()
+        # Strip leading \n
+        query_str = query_str.lstrip()
+        kwargs['handle_errors'] = False
+        return http(wsgi_app, query_str, *args, **kwargs)
+
+    def make_doctest(path):
+        test = doctest.DocFileSuite(
+            path,
+            checker=checker,
+            optionflags=flags,
+            globs={'http': _http})
+        test.layer = AppAuthenticationLayer
+        return test
+
+    principalfolder = make_doctest('../principalfolder.rst')
+    groupfolder = make_doctest('../groupfolder.rst')
+    pau_prefix_and_searching = make_doctest('../pau_prefix_and_searching.rst')
+    group_searching_with_empty_string = make_doctest('../group_searching_with_empty_string.rst')
+    special_groups = make_doctest('../special-groups.rst')
+    issue663 = make_doctest('../issue663.rst')
+
     return unittest.TestSuite((
         principalfolder,
         groupfolder,
@@ -154,5 +187,5 @@ def test_suite():
         special_groups,
         unittest.makeSuite(FunkTest),
         issue663,
-        doctest.DocFileSuite('../schemasearch.txt'),
+        doctest.DocFileSuite('../schemasearch.rst'),
         ))

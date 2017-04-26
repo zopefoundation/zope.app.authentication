@@ -12,21 +12,22 @@
 #
 ##############################################################################
 """Pluggable Authentication Service Tests
-
-$Id$
 """
+from __future__ import absolute_import
 __docformat__ = "reStructuredText"
 
 import unittest
 
 import doctest
-from zope.interface import implements
+from zope.interface import implementer
 from zope.component import provideUtility, provideAdapter, provideHandler
 from zope.component.eventtesting import getEvents, clearEvents
+from zope.component.testing import setUp as CASetUp, tearDown
+from zope.component.testing import PlacelessSetup as CAPlacelessSetup
+from zope.component.eventtesting import PlacelessSetup as EventPlacelessSetup
+
 from zope.publisher.interfaces import IRequest
 
-from zope.app.testing import placelesssetup
-from zope.app.testing.setup import placefulSetUp, placefulTearDown
 from zope.session.interfaces import \
         IClientId, IClientIdManager, ISession, ISessionDataContainer
 from zope.session.session import \
@@ -36,11 +37,95 @@ from zope.session.http import CookieClientIdManager
 from zope.publisher import base
 from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
 
-
+@implementer(IClientId)
 class TestClientId(object):
-    implements(IClientId)
     def __new__(cls, request):
         return 'dummyclientidfortesting'
+
+import zope.component.hooks
+
+from zope.annotation.attribute import AttributeAnnotations
+def setUpAnnotations():
+    zope.component.provideAdapter(AttributeAnnotations)
+
+
+from zope.traversing.interfaces import ITraversable
+import zope.traversing.api
+from zope.container.interfaces import ISimpleReadContainer
+from zope.container.traversal import ContainerTraversable
+def setUpTraversal():
+    from zope.traversing.testing import setUp
+    setUp()
+    zope.component.provideAdapter(ContainerTraversable,
+                                  (ISimpleReadContainer,), ITraversable)
+
+from zope.site.site import SiteManagerAdapter
+from zope.component.interfaces import IComponentLookup
+from zope.interface import Interface
+def setUpSiteManagerLookup():
+    zope.component.provideAdapter(SiteManagerAdapter, (Interface,),
+                                  IComponentLookup)
+
+from zope.site.folder import rootFolder
+
+from zope.site.site import LocalSiteManager
+import zope.component.interfaces
+
+def createSiteManager(folder, setsite=False):
+    if not zope.component.interfaces.ISite.providedBy(folder):
+        folder.setSiteManager(LocalSiteManager(folder))
+    if setsite:
+        zope.component.hooks.setSite(folder)
+    return zope.traversing.api.traverse(folder, "++etc++site")
+
+from zope.password.testing import setUpPasswordManagers
+from zope.container.testing import PlacelessSetup as ContainerPlacelessSetup
+from zope.schema.vocabulary import setVocabularyRegistry
+from zope.component.testing import PlacelessSetup as CAPlacelessSetup
+from zope.component.eventtesting import PlacelessSetup as EventPlacelessSetup
+from zope.i18n.testing import PlacelessSetup as I18nPlacelessSetup
+
+class PlacelessSetup(CAPlacelessSetup,
+                     EventPlacelessSetup,
+                     I18nPlacelessSetup,
+                     ContainerPlacelessSetup):
+
+    def setUp(self, doctesttest=None):
+        CAPlacelessSetup.setUp(self)
+        EventPlacelessSetup.setUp(self)
+        ContainerPlacelessSetup.setUp(self)
+        I18nPlacelessSetup.setUp(self)
+
+        setUpPasswordManagers()
+        #ztapi.browserView(None, 'absolute_url', AbsoluteURL)
+        #ztapi.browserViewProviding(None, AbsoluteURL, IAbsoluteURL)
+
+        from zope.security.testing import addCheckerPublic
+        addCheckerPublic()
+
+        from zope.security.management import newInteraction
+        newInteraction()
+
+        setVocabularyRegistry(None)
+
+setUp = PlacelessSetup().setUp
+
+def placefulSetUp(site=False):
+    PlacelessSetup().setUp()
+    zope.component.hooks.setHooks()
+    setUpAnnotations()
+    setUpTraversal()
+    setUpSiteManagerLookup()
+
+    if site:
+        site = rootFolder()
+        createSiteManager(site, setsite=True)
+        return site
+
+def placefulTearDown():
+    PlacelessSetup().tearDown()
+    zope.component.hooks.resetHooks()
+    zope.component.hooks.setSite()
 
 def siteSetUp(test):
     placefulSetUp(site=True)
@@ -49,7 +134,7 @@ def siteTearDown(test):
     placefulTearDown()
 
 def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
-    placelesssetup.setUp()
+    setUp()
     provideAdapter(TestClientId, [IRequest], IClientId)
     provideAdapter(Session, [IRequest], ISession)
     provideUtility(CookieClientIdManager(), IClientIdManager)
@@ -58,7 +143,7 @@ def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
 
 def nonHTTPSessionTestCaseSetUp(sdc_class=PersistentSessionDataContainer):
     # I am getting an error with ClientId and not TestClientId
-    placelesssetup.setUp()
+    setUp()
     provideAdapter(ClientId, [IRequest], IClientId)
     provideAdapter(Session, [IRequest], ISession)
     provideUtility(CookieClientIdManager(), IClientIdManager)
@@ -90,8 +175,26 @@ class NonHTTPSessionTestCase(unittest.TestCase):
 
         self.assertEqual(plugin.logout(base.TestRequest('/')), False)
 
+class LoginLogout(object):
+    # Dummy implementation of zope.app.security.browser.auth.LoginLogout
+
+    def __call__(self):
+        return None
+
+
+from zope.testing import renormalizing
+
+import re
+checker = renormalizing.RENormalizing([
+    (re.compile("u('[^']*?')"), r"\1"),
+    (re.compile('u("[^"]*?")'), r"\1"),
+])
+
 
 def test_suite():
+    flags = (doctest.NORMALIZE_WHITESPACE
+             | renormalizing.IGNORE_EXCEPTION_MODULE_IN_PYTHON2
+             | doctest.ELLIPSIS)
     return unittest.TestSuite((
         doctest.DocTestSuite('zope.app.authentication.interfaces'),
         doctest.DocTestSuite('zope.app.authentication.password'),
@@ -99,32 +202,44 @@ def test_suite():
         doctest.DocTestSuite('zope.app.authentication.httpplugins'),
         doctest.DocTestSuite('zope.app.authentication.ftpplugins'),
         doctest.DocTestSuite('zope.app.authentication.groupfolder'),
-        doctest.DocFileSuite('principalfolder.txt',
-                             setUp=placelesssetup.setUp,
-                             tearDown=placelesssetup.tearDown),
+        doctest.DocFileSuite('principalfolder.rst',
+                             optionflags=flags,
+                             checker=checker,
+                             setUp=setUp,
+                             tearDown=tearDown),
         doctest.DocTestSuite('zope.app.authentication.principalfolder',
-                             setUp=placelesssetup.setUp,
-                             tearDown=placelesssetup.tearDown),
+                             optionflags=flags,
+                             checker=checker,
+                             setUp=setUp,
+                             tearDown=tearDown),
         doctest.DocTestSuite('zope.app.authentication.idpicker'),
         doctest.DocTestSuite('zope.app.authentication.session',
+                             optionflags=flags,
+                             checker=checker,
                              setUp=siteSetUp,
                              tearDown=siteTearDown),
-        doctest.DocFileSuite('README.txt',
+        doctest.DocFileSuite('README.rst',
                              setUp=siteSetUp,
                              tearDown=siteTearDown,
+                             optionflags=flags,
+                             checker=checker,
                              globs={'provideUtility': provideUtility,
                                     'provideAdapter': provideAdapter,
                                     'provideHandler': provideHandler,
                                     'getEvents': getEvents,
                                     'clearEvents': clearEvents,
                                     }),
-        doctest.DocFileSuite('groupfolder.txt',
-                             setUp=placelesssetup.setUp,
-                             tearDown=placelesssetup.tearDown,
+        doctest.DocFileSuite('groupfolder.rst',
+                             setUp=setUp,
+                             tearDown=tearDown,
+                             optionflags=flags,
+                             checker=checker,
                              ),
-        doctest.DocFileSuite('vocabulary.txt',
-                             setUp=placelesssetup.setUp,
-                             tearDown=placelesssetup.tearDown,
+        doctest.DocFileSuite('vocabulary.rst',
+                             setUp=setUp,
+                             tearDown=tearDown,
+                             optionflags=flags,
+                             checker=checker,
                              ),
         unittest.makeSuite(NonHTTPSessionTestCase),
         ))

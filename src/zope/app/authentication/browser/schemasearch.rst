@@ -8,7 +8,7 @@ Placefull setup for making the search plugin IPhysicallyLocatable::
   >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
   >>> from zope.formlib.interfaces import IInputWidget
   >>> from zope.formlib.widgets import TextWidget
-  >>> from zope.app.testing.setup import placefulSetUp, placefulTearDown
+  >>> from zope.app.authentication.tests import placefulSetUp, placefulTearDown
   >>> site = placefulSetUp(True)
   >>> provideAdapter(TextWidget, (ITextLine, IDefaultBrowserLayer),
   ... IInputWidget)
