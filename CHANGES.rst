@@ -2,10 +2,14 @@
 Changes
 =======
 
-3.10 (unreleased)
------------------
+4.0.0 (unreleased)
+------------------
 
-- Nothing changed yet.
+- Drop test dependency on zope.app.zcmlfiles and zope.app.testing.
+
+- Drop explicit dependency on ZODB3.
+
+- Add support for Python 3.4, 3.5 and 3.6, and PyPy.
 
 
 3.9 (2010-10-18)
