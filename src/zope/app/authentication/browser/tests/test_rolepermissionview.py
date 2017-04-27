@@ -13,8 +13,8 @@
 ##############################################################################
 """Role-Permission View Tests
 
-$Id$
 """
+from __future__ import absolute_import
 import unittest
 
 import zope.interface
@@ -25,22 +25,20 @@ from zope.exceptions.interfaces import UserError
 from zope.security.permission import Permission
 from zope.security.interfaces import IPermission
 
-from zope.app.testing import ztapi
+from zope.app.authentication import testing as ztapi
 from zope.component.testing import PlacelessSetup as PlacefulSetup
 
 from zope.securitypolicy.role import Role
 from zope.securitypolicy.interfaces import IRole
 
-from zope.app.authentication.browser.tests.rolepermissionmanager import \
-     RolePermissionManager
-from zope.app.authentication.browser.rolepermissionview import \
-     RolePermissionView
+from zope.app.authentication.browser.tests.rolepermissionmanager import RolePermissionManager
+from zope.app.authentication.browser.rolepermissionview import RolePermissionView
 
 class RolePermissionView(RolePermissionView, BrowserView):
     """Adding BrowserView to Utilities; this is usually done by ZCML."""
 
-class TranslationDomain:
-    zope.interface.implements(ITranslationDomain)
+@zope.interface.implementer(ITranslationDomain)
+class TranslationDomain(object):
 
     def __init__(self, **translations):
         self.translations = translations
@@ -59,7 +57,7 @@ def definePermission(id, title=None, description=None):
     ztapi.provideUtility(IPermission, permission, name=permission.id)
     return permission
 
-class FakeSiteManager:
+class FakeSiteManager(object):
 
     def __init__(self, site):
         self.__parent__ = site

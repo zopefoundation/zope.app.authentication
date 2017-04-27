@@ -13,7 +13,6 @@
 ##############################################################################
 """Pluggable Authentication Service Tests
 
-$Id$
 """
 
 __docformat__ = "reStructuredText"
@@ -22,22 +21,16 @@ import re
 import unittest
 import doctest
 from zope.testing import renormalizing
-#from zope.app.testing.setup import placefulSetUp, placefulTearDown
+
 import transaction
 from zope.interface import directlyProvides
 from zope.exceptions.interfaces import UserError
-#from zope.app.testing import functional
+
 from zope.pluggableauth.factories import Principal
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.testing import AppAuthenticationLayer
 from zope.app.wsgi.testlayer import http
-
-# def schemaSearchSetUp(self):
-#     placefulSetUp(site=True)
-
-# def schemaSearchTearDown(self):
-#     placefulTearDown()
 
 from webtest import TestApp
 
@@ -86,9 +79,9 @@ class FunkTest(unittest.TestCase):
 
         response = self.publish('/pf/@@contents.html',
                                 basic='mgr:mgrpw',
-                                form={'ids': [u'p1'],
+                                form={'ids:list': [u'p1'],
                                       'container_copy_button': u'Copy'})
-        self.assertEqual(response.getStatus(), 302)
+        self.assertEqual(response.status_int, 302)
 
 
         # Try to paste the file
@@ -96,13 +89,11 @@ class FunkTest(unittest.TestCase):
             response = self.publish('/pf/@@contents.html',
                                     basic='mgr:mgrpw',
                                     form={'container_paste_button': ''})
-        except UserError, e:
-            self.assertEqual(
-                str(e),
-                "The given name(s) [u'p1'] is / are already being used")
-        else:
-            # test failed !
-            self.asserEqual(1, 0)
+            self.fail("Should raise exception")
+        except UserError as e:
+            self.assertIn("The given name(s)", str(e))
+            self.assertIn("p1", str(e))
+            self.assertIn("are already being used", str(e))
 
     def test_cutpaste_duplicated_id_object(self):
 
@@ -125,9 +116,9 @@ class FunkTest(unittest.TestCase):
 
         response = self.publish('/pf/@@contents.html',
                                 basic='mgr:mgrpw',
-                                form={'ids': [u'p1'],
+                                form={'ids:list': [u'p1'],
                                       'container_cut_button': u'Cut'})
-        self.assertEqual(response.getStatus(), 302)
+        self.assertEqual(response.status_int, 302)
 
 
         # Try to paste the file
@@ -135,21 +126,19 @@ class FunkTest(unittest.TestCase):
             response = self.publish('/pf/@@contents.html',
                                     basic='mgr:mgrpw',
                                     form={'container_paste_button': ''})
-        except UserError, e:
-            self.assertEqual(
-                str(e),
-                "The given name(s) [u'p1'] is / are already being used")
-        else:
-            # test failed !
-            self.asserEqual(1, 0)
+            self.fail("Should raise UserError")
+        except UserError as e:
+            self.assertIn("The given name(s)", str(e))
+            self.assertIn("p1", str(e))
+            self.assertIn("are already being used", str(e))
 
 
 checker = renormalizing.RENormalizing([
     (re.compile(r"HTTP/1\.0 200 .*"), "HTTP/1.1 200 OK"),
     (re.compile(r"HTTP/1\.0 303 .*"), "HTTP/1.1 303 See Other"),
     (re.compile(r"HTTP/1\.0 401 .*"), "HTTP/1.1 401 Unauthorized"),
-    ])
-
+    (re.compile(r"u'([^']*)'"), r"'\1'"),
+])
 
 def test_suite():
     flags = (doctest.NORMALIZE_WHITESPACE
@@ -160,7 +149,9 @@ def test_suite():
         wsgi_app = AppAuthenticationLayer.make_wsgi_app()
         # Strip leading \n
         query_str = query_str.lstrip()
-        kwargs['handle_errors'] = False
+        kwargs.setdefault('handle_errors', True)
+        if not isinstance(query_str, bytes):
+            query_str = query_str.encode("utf-8")
         return http(wsgi_app, query_str, *args, **kwargs)
 
     def make_doctest(path):
@@ -168,7 +159,7 @@ def test_suite():
             path,
             checker=checker,
             optionflags=flags,
-            globs={'http': _http})
+            globs={'http': _http, 'getRootFolder': AppAuthenticationLayer.getRootFolder})
         test.layer = AppAuthenticationLayer
         return test
 
@@ -189,3 +180,8 @@ def test_suite():
         issue663,
         doctest.DocFileSuite('../schemasearch.rst'),
         ))
+
+# XXX: Temporary workaround for zope.pluggableauth#7
+if str is not bytes:
+    import zope.pluggableauth.plugins.idpicker
+    zope.pluggableauth.plugins.idpicker.unicode = str

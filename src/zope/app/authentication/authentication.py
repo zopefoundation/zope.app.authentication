@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Pluggable Authentication Utility implementation
-
-$Id$
 """
 
 import zope.interface
@@ -26,7 +24,13 @@ from zope.pluggableauth import PluggableAuthentication
 from zope.pluggableauth.interfaces import (
     IQueriableAuthenticator, IPluggableAuthentication)
 
-
+@component.adapter(
+        interfaces.IQuerySchemaSearch,
+        IPluggableAuthentication)
+@zope.interface.implementer(
+        ILocation,
+        IQueriableAuthenticator,
+        interfaces.IQuerySchemaSearch)
 class QuerySchemaSearchAdapter(object):
     """Performs schema-based principal searches on behalf of a PAU.
 
@@ -34,15 +38,6 @@ class QuerySchemaSearchAdapter(object):
     IQuerySchemaSearch) and prepends the PAU prefix to the resulting principal
     IDs.
     """
-    component.adapts(
-        interfaces.IQuerySchemaSearch,
-        IPluggableAuthentication)
-
-    zope.interface.implements(
-        ILocation,
-        IQueriableAuthenticator,
-        interfaces.IQuerySchemaSearch)
-
     def __init__(self, authplugin, pau):
         if (ILocation.providedBy(authplugin) and
             authplugin.__parent__ is not None):

@@ -18,359 +18,197 @@ principal folder, which we'll create first.
 
 Create pluggable authentication utility and register it.
 
-  >>> print http(r"""
-  ... POST /++etc++site/default/@@contents.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 98
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication
-  ... 
-  ... type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication&new_value=PAU""")
-  HTTP/1.1 303 See Other
-  ...
-
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU/addRegistration.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 687
-  ... Content-Type: multipart/form-data; boundary=---------------------------5559795404609280911441883437
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/addRegistration.html
-  ... 
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.comment"
-  ... 
-  ... 
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.actions.register"
-  ... 
-  ... Register
-  ... -----------------------------5559795404609280911441883437--
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
-
-Add a Principal folder plugin to PAU.
-
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU/+/AddPrincipalFolder.html%3D HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 429
-  ... Content-Type: multipart/form-data; boundary=---------------------------95449631112274213651507932125
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/+/AddPrincipalFolder.html=
-  ... 
-  ... -----------------------------95449631112274213651507932125
-  ... Content-Disposition: form-data; name="field.prefix"
-  ... 
-  ... users
-  ... -----------------------------95449631112274213651507932125
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------95449631112274213651507932125
-  ... Content-Disposition: form-data; name="add_input_name"
-  ... 
-  ... users
-  ... -----------------------------95449631112274213651507932125--
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
-
-Add a principal to it:
-
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 780
-  ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
-  ... 
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.login"
-  ... 
-  ... bob
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.passwordManagerName"
-  ... 
-  ... Plain Text
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.password"
-  ... 
-  ... bob
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.title"
-  ... 
-  ... bob
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.description"
-  ... 
-  ... 
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="add_input_name"
-  ... 
-  ... bob
-  ... -----------------------------5110544421083023415453147877--
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
+  >>> from zope.testbrowser.wsgi import Browser
+  >>> manager_browser = Browser()
+  >>> manager_browser.handleErrors = False
+  >>> manager_browser.addHeader("Authorization", "Basic bWdyOm1ncnB3")
+  >>> manager_browser.post("http://localhost/++etc++site/default/@@contents.html",
+  ...   "type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication&new_value=PAU")
 
 
-Configure PAU, with registered principal folder plugin.
+  >>> manager_browser.getLink("Registration").click()
 
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU/@@configure.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 1038
-  ... Content-Type: multipart/form-data; boundary=---------------------------6519411471194050603270010787
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/@@configure.html
-  ... 
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.credentialsPlugins.to"
-  ... 
-  ... U2Vzc2lvbiBDcmVkZW50aWFscw==
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.credentialsPlugins-empty-marker"
-  ... 
-  ... 
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins.to"
-  ... 
-  ... dXNlcnM=
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins-empty-marker"
-  ... 
-  ... 
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Change
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.credentialsPlugins"
-  ... 
-  ... U2Vzc2lvbiBDcmVkZW50aWFscw==
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins"
-  ... 
-  ... dXNlcnM=
-  ... -----------------------------6519411471194050603270010787--
-  ... """)
-  HTTP/1.1 200 OK
-  ...
+Register PAU. First we get the registration page:
+
+  >>> manager_browser.getControl("Register this object").click()
+
+And then we can fill out and submit the form:
+
+  >>> manager_browser.getControl("Register").click()
+
+Add a Principal folder plugin to PAU. Again, we get the page, and then submit the form:
+
+  >>> manager_browser.getLink("Principal Folder").click()
+  >>> manager_browser.getControl(name="field.prefix").value = "users"
+  >>> manager_browser.getControl(name="add_input_name").value = "users"
+  >>> manager_browser.getControl("Add").click()
+
+Next we'll view the contents page of the principal folder:
+
+  >>> manager_browser.open("http://localhost/++etc++site/default/PAU/users/@@contents.html")
+  >>> 'users' in manager_browser.contents
+  True
+
+And we'll add a principal, Bob:
+
+  >>> manager_browser.getLink("Principal Information").click()
+  >>> manager_browser.getControl(name="field.login").value = 'bob'
+  >>> manager_browser.getControl(name="field.passwordManagerName").value = 'SHA1'
+  >>> manager_browser.getControl(name="field.password").value = 'bob'
+  >>> manager_browser.getControl(name="field.title").value = 'Bob Smith'
+  >>> manager_browser.getControl(name="field.description").value = 'This is Bob'
+  >>> manager_browser.getControl(name="add_input_name").value = 'bob'
+  >>> manager_browser.getControl(name="UPDATE_SUBMIT").click()
+  >>> manager_browser.open("http://localhost/++etc++site/default/PAU/users/@@contents.html")
+  >>> u'bob' in manager_browser.contents
+  True
+
+Configure PAU, with registered principal folder plugin and
+select any one credentials. Unfortunately, the option lists are computed dynamically in JavaScript, so
+we can't fill the form out directly. Instead we must send a complete POST body. We're choosing
+the users folder as the authenticator plugin, and the session utility as the credentials plugin.
+
+  >>> manager_browser.open("http://localhost/++etc++site/default/PAU/@@configure.html")
+  >>> manager_browser.post("http://localhost/++etc++site/default/PAU/@@configure.html",
+  ...  r"""UPDATE_SUBMIT=Change&field.credentialsPlugins=U2Vzc2lvbiBDcmVkZW50aWFscw==&field.authenticatorPlugins=dXNlcnM="""
+  ...  """&field.credentialsPlugins.to=U2Vzc2lvbiBDcmVkZW50aWFscw==&field.authenticatorPlugins.to=dXNlcnM=""")
+
 
 Normally, the anonymous role has view, we'll deny it:
 
-  >>> print http(r"""
-  ... POST /++etc++site/AllRolePermissions.html HTTP/1.1
-  ... Authorization: Basic mgr:mgrpw
-  ... Content-Type: application/x-www-form-urlencoded
-  ... 
-  ... role_id=zope.Anonymous""" 
-  ... """&Deny%3Alist=zope.View""" 
-  ... """&Deny%3Alist=zope.app.dublincore.view""" 
-  ... """&SUBMIT_ROLE=Save+Changes""")
-  HTTP/1.1 200 OK
-  ...
+  >>> manager_browser.post("/++etc++site/AllRolePermissions.html",
+  ...   """role_id=zope.Anonymous"""
+  ...   """&Deny%3Alist=zope.View"""
+  ...   """&Deny%3Alist=zope.app.dublincore.view"""
+  ...   """&SUBMIT_ROLE=Save+Changes""")
 
-Now, if we try to access the main page as an anonymous user, 
+Now, if we try to access the main page as an anonymous user,
 we'll be unauthorized:
 
 
-  >>> print http(r"""
-  ... GET / HTTP/1.1
-  ... """)
-  ...
-  HTTP/1.1 303 See Other
-  ...
-
-
+  >>> anon_browser = Browser()
+  >>> anon_browser.open("http://localhost/")
+  >>> print(anon_browser.url)
+  http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
 
 We'll even be unauthorized if we try to access it as bob:
 
-  >>> print http(r"""
-  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html HTTP/1.1
-  ... Content-Length: 94
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Cookie: zope3_cs_6a60902=cxcKJetHJjB2Px2umkzvTjeVI1E3aOpirHSjOYlxUPF.VX9DNjybrE
-  ... Referer: http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
-  ... 
-  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html""")
-  ...
-  HTTP/1.1 303 See Other
-  ...
+  >>> bob_browser = Browser()
+  >>> bob_browser.open("http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F")
+  >>> bob_browser.getControl(name="login").value = 'bob'
+  >>> bob_browser.getControl(name="password").value = 'bob'
+  >>> bob_browser.getControl(name="SUBMIT").click()
+  >>> print(bob_browser.url)
+  http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
 
 
 No, let's grant view to the authenticated group:
 
-  >>> print http(r"""
-  ... POST /@@grant.html HTTP/1.1
-  ... Authorization: Basic mgr:mgrpw
-  ... Content-Type: application/x-www-form-urlencoded
-  ... 
-  ... field.principal=em9wZS5BdXRoZW50aWNhdGVk&field.principal.displayed=y"""
-  ... """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.View=allow"""
-  ... """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.app.dublincore.view=allow"""
-  ... """&GRANT_SUBMIT=Change""")
-  HTTP/1.1 200 OK
-  ...
+  >>> manager_browser.open("/@@grant.html")
+  >>> 'principals.zcml' in manager_browser.contents
+  True
+  >>> manager_browser.getControl(name='field.principal.MQ__.search').click()
+
+Once we've found him, we see what roles are available:
+
+  >>> manager_browser.getControl(name="field.principal.MQ__.selection").displayValue = ['Authenticated Users']
+  >>> manager_browser.getControl(name="field.principal.MQ__.apply").click()
+  >>> 'zope.View' in manager_browser.contents
+  True
+
+  >>> manager_browser.post("/@@grant.html",
+  ...   """field.principal=em9wZS5BdXRoZW50aWNhdGVk&field.principal.displayed=y"""
+  ...   """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.View=allow"""
+  ...   """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.app.dublincore.view=allow"""
+  ...   """&GRANT_SUBMIT=Change""")
 
 Now, with this, we can access the main page as bob, but not as an
 anonymous user:
 
-  >>> print http(r"""
-  ... GET / HTTP/1.1
-  ... Authorization: Basic bob:123
-  ... """)
-  HTTP/1.1 200 OK
-  ...
+  >>> bob_browser.open("http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F")
+  >>> bob_browser.getControl(name="login").value = 'bob'
+  >>> bob_browser.getControl(name="password").value = 'bob'
+  >>> bob_browser.getControl(name="SUBMIT").click()
+  >>> print(bob_browser.url)
+  http://localhost/
 
-  >>> print http(r"""
-  ... GET / HTTP/1.1
-  ... """)
-  HTTP/1.1 200 OK 
-  ...
+
+  >>> anon_browser.open("http://localhost/")
+  >>> print(anon_browser.url)
+  http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
 
 ###401 Unauthorized
 
 
 Now, we'll grant to unauthenticated:
 
-  >>> print http(r"""
-  ... POST /@@grant.html HTTP/1.1
-  ... Authorization: Basic mgr:mgrpw
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost/@@grant.html
-  ... 
-  ... field.principal=em9wZS5Bbnlib2R5"""
-  ... """&field.em9wZS5Bbnlib2R5.permission.zope.View=allow"""
-  ... """&field.em9wZS5Bbnlib2R5.permission.zope.app.dublincore.view=allow"""
-  ... """&GRANT_SUBMIT=Change""")
-  HTTP/1.1 200 OK
-  ...
+  >>> manager_browser.post("/@@grant.html",
+  ...   """field.principal=em9wZS5Bbnlib2R5"""
+  ...   """&field.em9wZS5Bbnlib2R5.permission.zope.View=allow"""
+  ...   """&field.em9wZS5Bbnlib2R5.permission.zope.app.dublincore.view=allow"""
+  ...   """&GRANT_SUBMIT=Change""")
 
 With this, we can access the page as either bob or anonymous:
 
-  >>> print http(r"""
-  ... GET / HTTP/1.1
-  ... Authorization: Basic bob:123
-  ... """)
-  HTTP/1.1 200 OK
-  ...
+  >>> bob_browser.open("/")
+  >>> print(bob_browser.url)
+  http://localhost/
 
-  >>> print http(r"""
-  ... GET / HTTP/1.1
-  ... """)
-  HTTP/1.1 200 OK
-  ...
+  >>> anon_browser.open("/")
+  >>> print(anon_browser.url)
+  http://localhost/
 
 
 Now, we'll remove the authenticated group grant:
 
-  >>> print http(r"""
-  ... POST /@@grant.html HTTP/1.1
-  ... Authorization: Basic mgr:mgrpw
-  ... Content-Type: application/x-www-form-urlencoded
-  ... 
-  ... field.principal=em9wZS5BdXRoZW50aWNhdGVk"""
-  ... """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.View=unset"""
-  ... """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.app.dublincore.view=unset"""
-  ... """&GRANT_SUBMIT=Change""")
-  HTTP/1.1 200 OK
-  ...
+  >>> manager_browser.post("/@@grant.html",
+  ...   """field.principal=em9wZS5BdXRoZW50aWNhdGVk"""
+  ...   """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.View=unset"""
+  ...   """&field.em9wZS5BdXRoZW50aWNhdGVk.permission.zope.app.dublincore.view=unset"""
+  ...   """&GRANT_SUBMIT=Change""")
 
 And anonymous people will be able to access the page, but bob won't be able to:
 
-  >>> print http(r"""
-  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html HTTP/1.1
-  ... Content-Length: 94
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Cookie: zope3_cs_6a60902=cxcKJetHJjB2Px2umkzvTjeVI1E3aOpirHSjOYlxUPF.VX9DNjybrE
-  ... Referer: http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
-  ... 
-  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html""")
-  ...
-  HTTP/1.1 303 See Other
-  ...
+  >>> bob_browser.open("/")
+  >>> print(bob_browser.url)
+  http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
 
-
-
-  >>> print http(r"""
-  ... GET / HTTP/1.1
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
-
-
+  >>> anon_browser.open("/")
+  >>> print(anon_browser.url)
+  http://localhost/
 
 
 Now, we'll remove the unauthenticated group grant:
 
-  >>> print http(r"""
-  ... POST /@@grant.html HTTP/1.1
-  ... Authorization: Basic mgr:mgrpw
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost/@@grant.html
-  ... 
-  ... field.principal=em9wZS5Bbnlib2R5"""
-  ... """&field.em9wZS5Bbnlib2R5.permission.zope.View=unset"""
-  ... """&field.em9wZS5Bbnlib2R5.permission.zope.app.dublincore.view=unset"""
-  ... """&GRANT_SUBMIT=Change""")
-  HTTP/1.1 200 OK
-  ...
+  >>> manager_browser.post("/@@grant.html",
+  ...   """field.principal=em9wZS5Bbnlib2R5"""
+  ...   """&field.em9wZS5Bbnlib2R5.permission.zope.View=unset"""
+  ...   """&field.em9wZS5Bbnlib2R5.permission.zope.app.dublincore.view=unset"""
+  ...   """&GRANT_SUBMIT=Change""")
 
-  >>> print http(r"""
-  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html HTTP/1.1
-  ... Content-Length: 94
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Cookie: zope3_cs_6a60902=cxcKJetHJjB2Px2umkzvTjeVI1E3aOpirHSjOYlxUPF.VX9DNjybrE
-  ... Referer: http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
-  ... 
-  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html""")
-  ...
-  HTTP/1.1 303 See Other
-  ...
+  >>> bob_browser.open("/")
+  >>> print(bob_browser.url)
+  http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
 
-
-  >>> print http(r"""
-  ... GET / HTTP/1.1
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
-
+  >>> anon_browser.open("/")
+  >>> print(anon_browser.url)
+  http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40index.html
 
 
 Finally, we'll grant to everybody:
 
-  >>> print http(r"""
-  ... POST /@@grant.html HTTP/1.1
-  ... Authorization: Basic mgr:mgrpw
-  ... Content-Type: application/x-www-form-urlencoded
-  ... 
-  ... field.principal=em9wZS5FdmVyeWJvZHk_"""
-  ... """&field.em9wZS5FdmVyeWJvZHk_.permission.zope.View=allow"""
-  ... """&field.em9wZS5FdmVyeWJvZHk_.permission.zope.app.dublincore.view=allow"""
-  ... """&GRANT_SUBMIT=Change""", handle_errors = False)
-  HTTP/1.1 200 OK
-  ...
+  >>> manager_browser.post("/@@grant.html",
+  ...   """field.principal=em9wZS5FdmVyeWJvZHk_"""
+  ...   """&field.em9wZS5FdmVyeWJvZHk_.permission.zope.View=allow"""
+  ...   """&field.em9wZS5FdmVyeWJvZHk_.permission.zope.app.dublincore.view=allow"""
+  ...   """&GRANT_SUBMIT=Change""")
 
-and both bob nor anonymous can access:
+and both bob and anonymous can access:
 
-  >>> print http(r"""
-  ... GET / HTTP/1.1
-  ... Authorization: Basic bob:123
-  ... """)
-  HTTP/1.1 200 OK
-  ...
+  >>> bob_browser.open("/")
+  >>> print(bob_browser.url)
+  http://localhost/
 
-  >>> print http(r"""
-  ... GET / HTTP/1.1
-  ... """)
-  HTTP/1.1 200 OK
-  ...
+  >>> anon_browser.open("/")
+  >>> print(anon_browser.url)
+  http://localhost/

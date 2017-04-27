@@ -28,16 +28,23 @@ def read(*rnames):
         return f.read()
 
 tests_require = [
-    'zope.securitypolicy',
-    'zope.securitypolicy',
-    'zope.testbrowser >= 5.2',
-    'zope.publisher',
-    'zope.testing',
-    'zope.session',
+    'zope.app.security >= 4.0',
+    'zope.app.rotterdam >= 4.0',
+    'zope.app.basicskin >= 4.0',
+    'zope.app.form >= 5.0',
+    'zope.app.wsgi',
+    'zope.app.schema',
+
     'zope.formlib',
-    'zope.publisher >= 4.3.1',
-    'zope.site',
     'zope.login',
+    'zope.principalannotation',
+    'zope.publisher >= 4.3.1',
+    'zope.publisher',
+    'zope.securitypolicy',
+    'zope.session',
+    'zope.site',
+    'zope.testbrowser >= 5.2',
+    'zope.testing',
     'zope.testrunner'
 ]
 
@@ -102,13 +109,13 @@ setup(name='zope.app.authentication',
           'zope.interface',
           'zope.location',
           'zope.password >= 3.5.1',
-          'zope.pluggableauth >= 1.1',
+          'zope.pluggableauth >= 2.1',
           'zope.schema',
           'zope.security',
           'zope.traversing',
           # Needed for browser code.
           'zope.app.container >= 4.0.0',
-          'zope.app.component',
+          'zope.app.component >= 4.0.0.dev0',
           ],
       include_package_data=True,
       zip_safe=False,

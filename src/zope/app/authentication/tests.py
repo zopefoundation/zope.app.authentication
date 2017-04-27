@@ -181,6 +181,58 @@ class LoginLogout(object):
     def __call__(self):
         return None
 
+from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.browsermenu.menu import getFirstMenuItem
+
+
+@implementer(IBrowserPublisher)
+class ManagementViewSelector(BrowserView):
+    """View that selects the first available management view.
+
+    Support 'zmi_views' actions like: 'javascript:alert("hello")',
+    '../view_on_parent.html' or '++rollover++'.
+    """
+    # Copied from zope.app.publication
+    # Simplified to assert just the test case we expect.
+
+    def browserDefault(self, request):
+        return self, ()
+
+    def __call__(self):
+        item = getFirstMenuItem('zmi_views', self.context, self.request)
+        assert item
+        redirect_url = item['action']
+        if not redirect_url.lower().startswith(('../', 'javascript:', '++')):
+            self.request.response.redirect(redirect_url)
+            return u''
+        raise AssertionError("Should not get here") # pragma: no cover
+
+from zope.authentication.interfaces import IAuthentication
+from zope.component import getUtility
+from zope.publisher.browser import BrowserPage
+
+
+class Unauthorized(BrowserPage):
+
+    def template(self):
+        return "You are not authorized"
+
+    def __call__(self):
+        # Set the error status to 403 (Forbidden) in the case when we don't
+        # challenge the user
+        self.request.response.setStatus(403)
+
+        # make sure that squid does not keep the response in the cache
+        self.request.response.setHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
+        self.request.response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+        self.request.response.setHeader('Pragma', 'no-cache')
+
+        principal = self.request.principal
+        auth = getUtility(IAuthentication)
+        auth.unauthorized(principal.id, self.request)
+        if self.request.response.getStatus() not in (302, 303):
+            return self.template()
 
 from zope.testing import renormalizing
 

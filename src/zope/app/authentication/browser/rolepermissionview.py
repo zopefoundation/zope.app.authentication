@@ -13,13 +13,12 @@
 ##############################################################################
 """Role Permission View Classes
 
-$Id$
 """
 from datetime import datetime
 
 from zope.component import getUtilitiesFor, getUtility
 from zope.i18n import translate
-from zope.interface import implements
+from zope.interface import implementer
 from zope.exceptions.interfaces import UserError
 from zope.i18nmessageid import ZopeMessageFactory as _
 
@@ -167,9 +166,8 @@ class RolePermissionView(object):
         return status
 
 
+@implementer(IPermission)
 class PermissionRoles(object):
-
-    implements(IPermission)
 
     def __init__(self, permission, context, roles):
         self._permission = permission
@@ -203,9 +201,8 @@ class PermissionRoles(object):
         nosetting = Unset.getName()
         return [settings.get(role.id, nosetting) for role in self._roles]
 
+@implementer(IRole)
 class RolePermissions(object):
-
-    implements(IRole)
 
     def __init__(self, role, context, permissions):
         self._role = role

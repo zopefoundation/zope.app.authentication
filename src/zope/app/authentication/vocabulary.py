@@ -15,9 +15,10 @@
 
 This vocabulary provides terms for authentication utility plugins.
 
-$Id$
 """
 __docformat__ = "reStructuredText"
+
+import base64
 
 import zope.dublincore.interfaces
 from zope import interface, component, i18n
@@ -66,20 +67,23 @@ def _pluginVocabulary(context, interface, attr_name):
                 else:
                     title = k
                 terms[k] = vocabulary.SimpleTerm(
-                    k, k.encode('base64').strip(), i18n.Message(
-                        CONTAINED_TITLE, mapping={'name': title}))
+                    k,
+                    base64.b64encode(k.encode('utf-8') if not isinstance(k, bytes) else k).strip(),
+                    i18n.Message(CONTAINED_TITLE, mapping={'name': title}))
     utils = component.getUtilitiesFor(interface, context)
-    for nm, util in utils:
+    for nm, _util in utils:
         if nm not in terms:
             terms[nm] = vocabulary.SimpleTerm(
-                nm, nm.encode('base64').strip(), i18n.Message(
-                    UTILITY_TITLE, mapping={'name': nm}))
+                nm,
+                base64.b64encode(nm.encode('utf-8') if not isinstance(nm, bytes) else nm).strip(),
+                i18n.Message(UTILITY_TITLE, mapping={'name': nm}))
     if isPAU:
         for nm in set(getattr(context, attr_name)):
             if nm not in terms:
                 terms[nm] = vocabulary.SimpleTerm(
-                    nm, nm.encode('base64').strip(), i18n.Message(
-                        MISSING_TITLE, mapping={'name': nm}))
+                    nm,
+                    base64.b64encode(nm.encode('utf-8') if not isinstance(nm, bytes) else nm).strip(),
+                    i18n.Message(MISSING_TITLE, mapping={'name': nm}))
     return vocabulary.SimpleVocabulary(
         [term for nm, term in sorted(terms.items())])
 

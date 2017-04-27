@@ -13,11 +13,11 @@
 ##############################################################################
 """Security Policy Granting Views Tests"""
 
-from zope.app.testing import placelesssetup
+from zope.component import testing
 import doctest
 import unittest
 
 def test_suite():
-    return doctest.DocFileSuite('../granting.txt',
-                                setUp=placelesssetup.setUp,
-                                tearDown=placelesssetup.tearDown)
+    return doctest.DocFileSuite('../granting.rst',
+                                setUp=testing.setUp,
+                                tearDown=testing.tearDown)

@@ -9,300 +9,130 @@ and to configure the PAU to use plugin.
 Let's look at an example, in which we'll define a new manager named
 Bob.  Initially, attempts to log in as Bob fail:
 
-  >>> print http(r"""
-  ... GET /manage HTTP/1.1
-  ... Authorization: Basic Ym9iOjEyMw==
-  ... """)
-  HTTP/1.1 401 Unauthorized
+  >>> from zope.testbrowser.wsgi import Browser
+  >>> bob_browser = Browser()
+  >>> bob_browser.handleErrors = True
+  >>> bob_browser.addHeader("Authorization", "Basic Ym9iOjEyMw==")
+
+  >>> bob_browser.open("http://localhost/+")
+  Traceback (most recent call last):
   ...
+  urllib.error.HTTPError: HTTP Error 401: Unauthorized
+
 
 To allow Bob to log in, we'll start by adding a principal folder to PAU:
 
 We need to create and register a pluggable authentication utility.
 
-  >>> print http(r"""
-  ... POST /++etc++site/default/@@contents.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 98
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication
-  ... 
-  ... type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication&new_value=PAU""",
-  ... handle_errors=False)
-  HTTP/1.1 303 See Other
-  ...
+  >>> manager_browser = Browser()
+  >>> manager_browser.handleErrors = False
+  >>> manager_browser.addHeader("Authorization", "Basic bWdyOm1ncnB3")
+  >>> manager_browser.post("http://localhost/++etc++site/default/@@contents.html",
+  ...   "type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication&new_value=PAU")
 
-  >>> print http(r"""
-  ... GET /++etc++site/default/PAU/@@registration.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.authentication.authentication.PluggableAuthentication
-  ... """)
-  HTTP/1.1 200 OK
-  ...
 
-Register PAU.
+  >>> manager_browser.getLink("Registration").click()
 
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU/addRegistration.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 687
-  ... Content-Type: multipart/form-data; boundary=---------------------------5559795404609280911441883437
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/addRegistration.html
-  ... 
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.comment"
-  ... 
-  ... 
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.actions.register"
-  ... 
-  ... Register
-  ... -----------------------------5559795404609280911441883437--
-  ... """, handle_errors=False)
-  HTTP/1.1 303 See Other
-  ...
+Register PAU. First we get the registration page:
 
-Add a Principal folder plugin to PAU.
+  >>> manager_browser.getControl("Register this object").click()
 
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU/+/AddPrincipalFolder.html%3D HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 429
-  ... Content-Type: multipart/form-data; boundary=---------------------------95449631112274213651507932125
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/+/AddPrincipalFolder.html=
-  ... 
-  ... -----------------------------95449631112274213651507932125
-  ... Content-Disposition: form-data; name="field.prefix"
-  ... 
-  ... users
-  ... -----------------------------95449631112274213651507932125
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------95449631112274213651507932125
-  ... Content-Disposition: form-data; name="add_input_name"
-  ... 
-  ... users
-  ... -----------------------------95449631112274213651507932125--
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
+And then we can fill out and submit the form:
 
-We specify a prefix, `users.`.  This is used to make sure that ids
+  >>> manager_browser.getControl("Register").click()
+
+Add a Principal folder plugin to PAU. Again, we get the page, and then submit the form:
+
+  >>> manager_browser.getLink("Principal Folder").click()
+  >>> manager_browser.getControl(name="field.prefix").value = "users"
+  >>> manager_browser.getControl(name="add_input_name").value = "users"
+  >>> manager_browser.getControl("Add").click()
+
+We specify a prefix, ``users``.  This is used to make sure that ids
 used by this plugin don't conflict with ids of other plugins.  We also
-name ths plugin `users`.  This is the name we'll use when we configure
+name ths plugin ``users``.  This is the name we'll use when we configure
 the pluggable authentiaction service.
 
 Next we'll view the contents page of the principal folder:
 
-  >>> print http(r"""
-  ... GET /++etc++site/default/PAU/users/@@contents.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/users/addRegistration.html
-  ... """)
-  HTTP/1.1 200 OK
-  ...
-
+  >>> manager_browser.open("http://localhost/++etc++site/default/PAU/users/@@contents.html")
+  >>> 'users' in manager_browser.contents
+  True
 
 And we'll add a principal, Bob:
 
-
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 780
-  ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
-  ... 
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.login"
-  ... 
-  ... bob
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.passwordManagerName"
-  ... 
-  ... SHA1
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.password"
-  ... 
-  ... bob
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.title"
-  ... 
-  ... bob
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.description"
-  ... 
-  ... 
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="add_input_name"
-  ... 
-  ... bob
-  ... -----------------------------5110544421083023415453147877--
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
+  >>> manager_browser.getLink("Principal Information").click()
+  >>> manager_browser.getControl(name="field.login").value = 'bob'
+  >>> manager_browser.getControl(name="field.passwordManagerName").value = 'SHA1'
+  >>> manager_browser.getControl(name="field.password").value = 'bob'
+  >>> manager_browser.getControl(name="field.title").value = 'Bob Smith'
+  >>> manager_browser.getControl(name="field.description").value = 'This is Bob'
+  >>> manager_browser.getControl(name="add_input_name").value = 'bob'
+  >>> manager_browser.getControl(name="UPDATE_SUBMIT").click()
+  >>> manager_browser.open("http://localhost/++etc++site/default/PAU/users/@@contents.html")
+  >>> u'bob' in manager_browser.contents
+  True
 
 Note that we didn't pick a name.  The name, together with the folder
 prefix. If we don't choose a name, a numeric id is chosen.
 
+Now we have a principal folder with a principal.
 
-Now we have a principal folder with a principal. 
+Configure PAU, with registered principal folder plugin and
+select any one credentials. Unfortunately, the option lists are computed dynamically in JavaScript, so
+we can't fill the form out directly. Instead we must send a complete POST body. We're choosing
+the users folder as the authenticator plugin, and the session utility as the credentials plugin.
 
-Configure PAU, with registered principal folder plugin and 
-select any one credentials.
-
-  >>> print http(r"""
-  ... POST /++etc++site/default/PAU/@@configure.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 1038
-  ... Content-Type: multipart/form-data; boundary=---------------------------6519411471194050603270010787
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/@@configure.html
-  ... 
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.credentialsPlugins.to"
-  ... 
-  ... U2Vzc2lvbiBDcmVkZW50aWFscw==
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.credentialsPlugins-empty-marker"
-  ... 
-  ... 
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins.to"
-  ... 
-  ... dXNlcnM=
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins-empty-marker"
-  ... 
-  ... 
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Change
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.credentialsPlugins"
-  ... 
-  ... U2Vzc2lvbiBDcmVkZW50aWFscw==
-  ... -----------------------------6519411471194050603270010787
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins"
-  ... 
-  ... dXNlcnM=
-  ... -----------------------------6519411471194050603270010787--
-  ... """, handle_errors=False)
-  HTTP/1.1 200 OK
-  ... 
+  >>> manager_browser.open("http://localhost/++etc++site/default/PAU/@@configure.html")
+  >>> manager_browser.post("http://localhost/++etc++site/default/PAU/@@configure.html",
+  ...  r"""UPDATE_SUBMIT=Change&field.credentialsPlugins=U2Vzc2lvbiBDcmVkZW50aWFscw==&field.authenticatorPlugins=dXNlcnM="""
+  ...  """&field.credentialsPlugins.to=U2Vzc2lvbiBDcmVkZW50aWFscw==&field.authenticatorPlugins.to=dXNlcnM=""")
 
 Now, with this in place, Bob can log in, but he isn't allowed to
-access the management interface. When he attempts to do so, the PAU 
+access the management interface. When he attempts to do so, the PAU
 issues a challenge to let bob login as a different user
 
-  >>> print http(r"""
-  ... POST /@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40login.html HTTP/1.1
-  ... Content-Length: 94
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
-  ... Referer: http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%40%40login.html
-  ... 
-  ... login=bob&password=bob&SUBMIT=Log+in&camefrom=http%3A%2F%2Flocalhost%2F%40%40login.html""")
-  HTTP/1.1 303 See Other
-  ...
+  >>> bob_browser.open("/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F")
+  >>> bob_browser.getControl(name="login").value = 'bob'
+  >>> bob_browser.getControl(name="password").value = 'bob'
+  >>> bob_browser.getControl(name="SUBMIT").click()
+  >>> print(bob_browser.url)
+  http://localhost/
 
-When he attempts to do so, the PAU issues a challenge to let bob login 
+When he attempts to do so, the PAU issues a challenge to let bob login
 as a different user
 
-  >>> print http(r"""
-  ... GET /+ HTTP/1.1
-  ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
-  ... """)
-  HTTP/1.1 303 See Other
-  ...
+  >>> bob_browser.open("/+")
+  >>> print(bob_browser.url)
+  http://localhost/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F%2B
+  >>> 'not authorized' in bob_browser.contents
+  True
 
+We go to the granting interface and search for and find a principal named Bob
+(the form control names are magic and generated by zope.formlib; this is searching the PAU):
 
-We go to the granting interface and search for and find a principal named Bob:
-  >>> print http(r"""
-  ... GET /@@grant.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
-  ... Referer: http://localhost/@@contents.html
-  ... """)
-  HTTP/1.1 200 OK
-  ...
+  >>> manager_browser.open("/@@contents.html")
+  >>> manager_browser.open("/@@grant.html")
+  >>> '/++etc++site/default/PAU/users' in manager_browser.contents
+  True
+  >>> manager_browser.getControl(name="field.principal.MC51c2Vycw__.field.search").value = 'bob'
+  >>> manager_browser.getControl(name='field.principal.MC51c2Vycw__.search').click()
 
-  >>> print http(r"""
-  ... POST /@@grant.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 210
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
-  ... Referer: http://localhost/@@grant.html
-  ... 
-  ... field.principal.displayed=y&field.principal.MC51c2Vycw__.query.field.search=&field.principal.MC51c2Vycw__.selection=dXNlcnNib2I_&field.principal.MC51c2Vycw__.apply=Apply&field.principal.MQ__.query.searchstring=""")
-  HTTP/1.1 200 OK
-  ...
+Once we've found him, we see what roles are available:
 
+  >>> manager_browser.getControl(name="field.principal.MC51c2Vycw__.selection").displayValue = ['Bob Smith']
+  >>> manager_browser.getControl(name="field.principal.MC51c2Vycw__.apply").click()
+  >>> 'Site Manager' in manager_browser.contents
+  True
 
-  >>> print http(r"""
-  ... POST /@@grant.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 210
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
-  ... Referer: http://localhost/@@grant.html
-  ... 
-  ... field.principal.displayed=y&field.principal.MC51c2Vycw__.query.field.search=&field.principal.MC51c2Vycw__.selection=dXNlcnNib2I_&field.principal.MC51c2Vycw__.apply=Apply&field.principal.MQ__.query.searchstring=""")
-  HTTP/1.1 200 OK
-  ...
+We can grant Bob the manager role now:
 
-
-We select Bob and grant him the Manager role:
-
-  >>> print http(r"""
-  ... POST /@@grant.html HTTP/1.1
-  ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 5316
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost/@@grant.html
-  ... 
-  ... field.principal=dXNlcnMuMQ__"""
-  ... """&field.principal.displayed=y"""
-  ... """&field.principal.MC51c2Vycw__.query.field.search=bob"""
-  ... """&field.principal.MA__.query.searchstring="""
-  ... """&GRANT_SUBMIT=Change"""
-  ... """&field.dXNlcnMuMQ__.role.zope.Manager=allow"""
-  ... """&field.dXNlcnMuMQ__.role.zope.Manager-empty-marker=1""")
-  HTTP/1.1 200 OK
-  ...
-
-
-  >>> print http(r"""
-  ... POST /@@grant.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 2598
-  ... Content-Type: application/x-www-form-urlencoded
-  ... Cookie: zope3_cs_6a58ae0=zt1tvSi4JRxMD4bggPyUqMA70iE3bgAqvQB.y.ZeOhMmkfbens3-pU
-  ... Referer: http://localhost/@@grant.html
-  ... 
-  ... field.principal=dXNlcnNib2I_&field.principal.displayed=y&field.principal.MC51c2Vycw__.query.field.search=&field.principal.MQ__.query.searchstring=&GRANT_SUBMIT=Change&field.dXNlcnNib2I_.role.bugtracker.Admin=unset&field.dXNlcnNib2I_.role.bugtracker.Editor=unset&field.dXNlcnNib2I_.role.bugtracker.User=unset&field.dXNlcnNib2I_.role.zope.Anonymous=unset&field.dXNlcnNib2I_.role.zope.Manager=allow&field.dXNlcnNib2I_.role.zope.Member=unset&field.dXNlcnNib2I_.role.zwiki.Admin=unset&field.dXNlcnNib2I_.role.zwiki.Editor=unset&field.dXNlcnNib2I_.role.zwiki.User=unset&field.dXNlcnNib2I_.permission.bugtracker.AddBug=unset&field.dXNlcnNib2I_.permission.bugtracker.AddAttachment=unset&field.dXNlcnNib2I_.permission.bugtracker.AddComment=unset&field.dXNlcnNib2I_.permission.zwiki.AddWikiPage=unset&field.dXNlcnNib2I_.permission.zwiki.CommentWikiPage=unset&field.dXNlcnNib2I_.permission.zwiki.DeleteWikiPage=unset&field.dXNlcnNib2I_.permission.bugtracker.EditBug=unset&field.dXNlcnNib2I_.permission.zwiki.EditWikiPage=unset&field.dXNlcnNib2I_.permission.bugtracker.ManageBugTracker=unset&field.dXNlcnNib2I_.permission.zwiki.ReparentWikiPage=unset&field.dXNlcnNib2I_.permission.bugtracker.ViewBug=unset&field.dXNlcnNib2I_.permission.bugtracker.ViewBugTracker=unset&field.dXNlcnNib2I_.permission.zwiki.ViewWikiPage=unset&field.dXNlcnNib2I_.permission.zope.AddImages=unset&field.dXNlcnNib2I_.permission.zope.AddSQLScripts=unset&field.dXNlcnNib2I_.permission.zope.Security=unset&field.dXNlcnNib2I_.permission.zope.workflow.CreateProcessInstances=unset&field.dXNlcnNib2I_.permission.zope.ManageApplication=unset&field.dXNlcnNib2I_.permission.zope.ManageCode=unset&field.dXNlcnNib2I_.permission.zope.ManageContent=unset&field.dXNlcnNib2I_.permission.zope.ManagePrincipals=unset&field.dXNlcnNib2I_.permission.zope.ManageBindings=unset&field.dXNlcnNib2I_.permission.zope.ManageServices=unset&field.dXNlcnNib2I_.permission.zope.ManageSite=unset&field.dXNlcnNib2I_.permission.zope.workflow.ManageProcessDefinitions=unset&field.dXNlcnNib2I_.permission.zope.SendMail=unset&field.dXNlcnNib2I_.permission.zope.UndoAllTransactions=unset&field.dXNlcnNib2I_.permission.zope.UndoOwnTransactions=unset&field.dXNlcnNib2I_.permission.zope.workflow.UseProcessInstances=unset&field.dXNlcnNib2I_.permission.zope.View=unset&field.dXNlcnNib2I_.permission.zope.app.apidoc.UseAPIDoc=unset&field.dXNlcnNib2I_.permission.zope.app.dublincore.change=unset&field.dXNlcnNib2I_.permission.zope.app.dublincore.view=unset&field.dXNlcnNib2I_.permission.zope.app.introspector.Introspect=unset&field.dXNlcnNib2I_.permission.zope.app.rdb.Use=unset""")
-  HTTP/1.1 200 OK
-  ...
-
+  >>> allow = manager_browser.getControl(name='field.dXNlcnNib2I_.role.zope.Manager', index=0)
+  >>> allow.value = ['allow']
+  >>> manager_browser.getControl(name="GRANT_SUBMIT", index=1).click()
 
 At which point, Bob can access the management interface:
 
-  >>> print http(r"""
-  ... GET /@@contents.html HTTP/1.1
-  ... Authorization: Basic Ym9iOjEyMw==
-  ... """)
-  HTTP/1.1 200 OK
-  ...
+  >>> bob_browser.open("http://localhost/@@contents.html")
+  >>> print(bob_browser.url)
+  http://localhost/@@contents.html

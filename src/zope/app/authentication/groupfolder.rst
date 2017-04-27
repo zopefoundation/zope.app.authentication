@@ -36,8 +36,9 @@ we'll create a sample authentication service:
   >>> from zope.security.interfaces import IGroupAwarePrincipal
   >>> from zope.app.authentication.groupfolder import setGroupsForPrincipal
 
-  >>> class Principal:
-  ...     interface.implements(IGroupAwarePrincipal)
+  >>> @interface.implementer(IGroupAwarePrincipal)
+  ... class Principal(object):
+  ...
   ...     def __init__(self, id, title='', description=''):
   ...         self.id, self.title, self.description = id, title, description
   ...         self.groups = []
@@ -49,9 +50,8 @@ we'll create a sample authentication service:
 
   >>> from zope.app.authentication import principalfolder
 
-  >>> class Principals:
-  ...
-  ...     interface.implements(IAuthentication)
+  >>> @interface.implementer(IAuthentication)
+  ... class Principals(object):
   ...
   ...     def __init__(self, groups, prefix='auth.'):
   ...         self.prefix = prefix
@@ -277,8 +277,9 @@ provided.
 Lets define a group-aware principal:
 
   >>> import zope.security.interfaces
-  >>> class GroupAwarePrincipal(Principal):
-  ...     interface.implements(zope.security.interfaces.IGroupAwarePrincipal)
+  >>> @interface.implementer(zope.security.interfaces.IGroupAwarePrincipal)
+  ... class GroupAwarePrincipal(Principal):
+  ...
   ...     def __init__(self, id):
   ...         Principal.__init__(self, id)
   ...         self.groups = []
@@ -295,8 +296,9 @@ because the groups haven't been defined:
 Now, if we define the Everybody group:
 
   >>> import zope.authentication.interfaces
-  >>> class EverybodyGroup(Principal):
-  ...     interface.implements(zope.authentication.interfaces.IEveryoneGroup)
+  >>> @interface.implementer(zope.authentication.interfaces.IEveryoneGroup)
+  ... class EverybodyGroup(Principal):
+  ...     pass
 
   >>> everybody = EverybodyGroup('all')
   >>> provideUtility(everybody, zope.authentication.interfaces.IEveryoneGroup)
@@ -309,9 +311,9 @@ Then the group will be added to the principal:
 
 Similarly for the authenticated group:
 
-  >>> class AuthenticatedGroup(Principal):
-  ...     interface.implements(
-  ...         zope.authentication.interfaces.IAuthenticatedGroup)
+  >>> @interface.implementer(zope.authentication.interfaces.IAuthenticatedGroup)
+  ... class AuthenticatedGroup(Principal):
+  ...     pass
 
   >>> authenticated = AuthenticatedGroup('auth')
   >>> provideUtility(authenticated, zope.authentication.interfaces.IAuthenticatedGroup)
@@ -334,8 +336,9 @@ These groups are only added to non-group principals:
 
 And they are only added to group aware principals:
 
-  >>> class SolitaryPrincipal:
-  ...     interface.implements(zope.security.interfaces.IPrincipal)
+  >>> @interface.implementer(zope.security.interfaces.IPrincipal)
+  ... class SolitaryPrincipal(object):
+  ...
   ...     id = title = description = ''
 
   >>> event = interfaces.FoundPrincipalCreated(42, SolitaryPrincipal(), {})
@@ -351,9 +354,9 @@ This allows groups to be able to get and set their members.
 
 Given an info object and a group...
 
-    >>> class DemoGroupInformation(object):
-    ...     interface.implements(
-    ...         zope.app.authentication.groupfolder.IGroupInformation)
+    >>> @interface.implementer(zope.app.authentication.groupfolder.IGroupInformation)
+    ... class DemoGroupInformation(object):
+    ...
     ...     def __init__(self, title, description, principals):
     ...         self.title = title
     ...         self.description = description
@@ -364,8 +367,9 @@ Given an info object and a group...
     ...
     >>> info = zope.app.authentication.groupfolder.GroupInfo(
     ...     'groups.managers', i)
-    >>> class DummyGroup(object):
-    ...     interface.implements(IGroupAwarePrincipal)
+    >>> @interface.implementer(IGroupAwarePrincipal)
+    ... class DummyGroup(object):
+    ...
     ...     def __init__(self, id, title=u'', description=u''):
     ...         self.id = id
     ...         self.title = title

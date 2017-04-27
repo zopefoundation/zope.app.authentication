@@ -53,7 +53,7 @@ then we can get a view::
 
 This allows us to render a search form::
 
-  >>> print view.render('test') # doctest: +NORMALIZE_WHITESPACE
+  >>> print(view.render('test')) # doctest: +NORMALIZE_WHITESPACE
   <h4>searchplugin</h4>
   <div class="row">
     <div class="label">

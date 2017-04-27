@@ -13,7 +13,6 @@
 ##############################################################################
 """Search interface for queriables.
 
-$Id$
 """
 __docformat__ = "reStructuredText"
 
@@ -23,7 +22,7 @@ from zope.formlib.interfaces import ISourceQueryView
 from zope.formlib.interfaces import WidgetsError, MissingInputError
 from zope.formlib.utility import setUpWidgets
 from zope.i18n import translate
-from zope.interface import implements
+from zope.interface import implementer
 from zope.schema import getFieldsInOrder
 from zope.traversing.api import getName, getPath
 
@@ -32,8 +31,8 @@ search_label = _('search-button', 'Search')
 source_label = _(u"Source path")
 source_title = _(u"Path to the source utility")
 
+@implementer(ISourceQueryView)
 class QuerySchemaSearchView(object):
-    implements(ISourceQueryView)
 
     def __init__(self, context, request):
         self.context = context
@@ -103,7 +102,7 @@ class QuerySchemaSearchView(object):
         return '\n'.join(html)
 
     def results(self, name):
-        if not (name+'.search' in self.request):
+        if (name + '.search') not in self.request:
             return None
         schema = self.context.schema
         setUpWidgets(self, schema, IInputWidget, prefix=name+'.field')
@@ -117,7 +116,7 @@ class QuerySchemaSearchView(object):
                 if widget.hasInput():
                     try:
                         data[name] = widget.getInputValue()
-                    except InputErrors, error:
+                    except InputErrors as error:
                         errors.append(error)
                 elif field.required:
                     errors.append(MissingInputError(

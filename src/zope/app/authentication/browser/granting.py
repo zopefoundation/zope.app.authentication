@@ -13,9 +13,11 @@
 ##############################################################################
 """Granting Roles and Permissions to Principals
 
-$Id$
 """
+
 __docformat__ = "reStructuredText"
+
+import base64
 
 import zope.schema
 from zope.component import getUtilitiesFor
@@ -35,12 +37,18 @@ from zope.formlib.widget import renderElement
 from zope.formlib.widgets import RadioWidget
 from zope.security.interfaces import IPermission
 
+try:
+    text_type = unicode
+except NameError:
+    text_type = str
 
-settings_vocabulary = GrantVocabulary(
-    [SimpleTerm(Allow, token="allow", title=_('Allow')),
-     SimpleTerm(Unset, token="unset", title=_('Unset')),
-     SimpleTerm(Deny,  token='deny',  title=_('Deny')),
-     ])
+import base64
+
+settings_vocabulary = GrantVocabulary([
+    SimpleTerm(Allow, token="allow", title=_('Allow')),
+    SimpleTerm(Unset, token="unset", title=_('Unset')),
+    SimpleTerm(Deny,  token='deny',  title=_('Deny')),
+])
 
 
 class GrantWidget(RadioWidget):
@@ -61,11 +69,7 @@ class GrantWidget(RadioWidget):
     def __call__(self):
         """See IBrowserWidget."""
         value = self._getFormValue()
-        contents = []
-        have_results = False
-
         return self.renderValue(value)
-
 
     def renderItem(self, index, text, value, name, cssClass):
         """Render an item of the list.
@@ -159,16 +163,19 @@ class Granting(object):
         self.principal = principal
 
         # Make sure we can use the principal id in a form by base64ing it
-        principal_token = unicode(principal).encode('base64').strip().replace(
-            '=', '_')
+        principal_str = text_type(principal)
+        principal_bytes = principal_str.encode('utf-8')
+        principal_token = base64.b64encode(principal_bytes).strip().replace(b'=', b'_')
+        if not isinstance(principal_token, str):
+            principal_token = principal_token.decode('utf-8')
 
         roles = [role for name, role in getUtilitiesFor(IRole)]
-        roles.sort(lambda x, y: cmp(x.title, y.title))
+        roles.sort(key=lambda x: x.title)
         principal_roles = IPrincipalRoleManager(self.context)
 
         self.roles = []
         for role in roles:
-            name = principal_token + '.role.'+role.id
+            name = principal_token + '.role.' + role.id
             field = zope.schema.Choice(__name__= name,
                                        title=role.title,
                                        vocabulary=settings_vocabulary)
@@ -177,7 +184,7 @@ class Granting(object):
             self.roles.append(getattr(self, name+'_widget'))
 
         perms = [perm for name, perm in getUtilitiesFor(IPermission)]
-        perms.sort(lambda x, y: cmp(x.title, y.title))
+        perms.sort(key=lambda x: x.title)
         principal_perms = IPrincipalPermissionManager(self.context)
 
         self.permissions = []

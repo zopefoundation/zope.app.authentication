@@ -12,9 +12,7 @@
 #
 ##############################################################################
 """Pluggable Authentication Utility
-
-$Id$
 """
 
-import interfaces
+from zope.app.authentication import interfaces
 from zope.pluggableauth.authentication import PluggableAuthentication

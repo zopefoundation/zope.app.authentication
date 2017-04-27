@@ -12,22 +12,19 @@
 #
 ##############################################################################
 """Test IRolePermissionManager class that has no context.
-
-$Id$
 """
 
-from zope.interface import implements
+from zope.interface import implementer
 from zope.securitypolicy.interfaces import Allow, Deny, Unset
 from zope.securitypolicy.interfaces import IRolePermissionManager
 from zope.securitypolicy.interfaces import IRolePermissionMap
 from zope.securitypolicy.securitymap import SecurityMap
 
+@implementer(IRolePermissionManager, IRolePermissionMap)
 class RolePermissionManager(object):
     """
     provide adapter that manages role permission data in an object attribute
     """
-
-    implements(IRolePermissionManager, IRolePermissionMap)
 
     def __init__(self):
         self._rp = SecurityMap()

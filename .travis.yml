@@ -17,6 +17,8 @@ notifications:
 install:
   - pip install -U pip setuptools
   - pip install -U coveralls coverage
+  # XXX Temporary
+  - pip install git+https://github.com/zopefoundation/zope.app.component@python3#egg=zope.app.component
   - pip install -U -e ".[test]"
 
 

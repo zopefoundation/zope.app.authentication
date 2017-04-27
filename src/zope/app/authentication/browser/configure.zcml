@@ -24,7 +24,7 @@
   </addform>
 
   <addMenuItem
-      class="..authentication.PluggableAuthentication"
+      class="zope.pluggableauth.authentication.PluggableAuthentication"
       view="AddPluggableAuthentication.html"
       title="Pluggable Authentication Utility"
       description="New-style pluggable authentication utility"
@@ -32,14 +32,14 @@
       />
 
   <page
-      for="..interfaces.IPluggableAuthentication"
+      for="zope.pluggableauth.interfaces.IPluggableAuthentication"
       name="addRegistration.html"
       permission="zope.ManageSite"
       class=".register.AddAuthenticationRegistration"
       />
 
   <editform
-      schema="..interfaces.IPluggableAuthentication"
+      schema="zope.pluggableauth.interfaces.IPluggableAuthentication"
       label="Edit Pluggable Authentication Utility"
       name="configure.html"
       fields="prefix credentialsPlugins authenticatorPlugins"
@@ -49,7 +49,7 @@
 
   <page
       name="contents.html"
-      for="..interfaces.IPluggableAuthentication"
+      for="zope.pluggableauth.interfaces.IPluggableAuthentication"
       menu="zmi_views" title="Plugins"
       permission="zope.ManageSite"
       class="zope.app.container.browser.contents.Contents"
@@ -59,7 +59,7 @@
   <view
       name="+"
       menu="zmi_actions" title="Add"
-      for="..interfaces.IPluggableAuthentication"
+      for="zope.pluggableauth.interfaces.IPluggableAuthentication"
       permission="zope.ManageSite"
       class=".adding.Adding"
       >
@@ -75,14 +75,14 @@
 
   <menuItem
       menu="zmi_views"
-      for="..interfaces.IPluggableAuthentication"
+      for="zope.pluggableauth.interfaces.IPluggableAuthentication"
       title="Contents"
       action=""
       filter="python:False"
       />
 
   <zope:adapter
-      for="..interfaces.IQuerySchemaSearch
+      for="zope.pluggableauth.interfaces.IQuerySchemaSearch
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.formlib.interfaces.ISourceQueryView"
       factory=".schemasearch.QuerySchemaSearchView"
