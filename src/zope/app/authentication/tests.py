@@ -22,7 +22,7 @@ import doctest
 from zope.interface import implementer
 from zope.component import provideUtility, provideAdapter, provideHandler
 from zope.component.eventtesting import getEvents, clearEvents
-from zope.component.testing import setUp as CASetUp, tearDown
+from zope.component.testing import tearDown
 from zope.component.testing import PlacelessSetup as CAPlacelessSetup
 from zope.component.eventtesting import PlacelessSetup as EventPlacelessSetup
 
@@ -36,11 +36,6 @@ from zope.session.http import CookieClientIdManager
 
 from zope.publisher import base
 from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
-
-@implementer(IClientId)
-class TestClientId(object):
-    def __new__(cls, request):
-        return 'dummyclientidfortesting'
 
 import zope.component.hooks
 
@@ -81,8 +76,6 @@ def createSiteManager(folder, setsite=False):
 from zope.password.testing import setUpPasswordManagers
 from zope.container.testing import PlacelessSetup as ContainerPlacelessSetup
 from zope.schema.vocabulary import setVocabularyRegistry
-from zope.component.testing import PlacelessSetup as CAPlacelessSetup
-from zope.component.eventtesting import PlacelessSetup as EventPlacelessSetup
 from zope.i18n.testing import PlacelessSetup as I18nPlacelessSetup
 
 class PlacelessSetup(CAPlacelessSetup,
@@ -133,13 +126,13 @@ def siteSetUp(test):
 def siteTearDown(test):
     placefulTearDown()
 
-def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
-    setUp()
-    provideAdapter(TestClientId, [IRequest], IClientId)
-    provideAdapter(Session, [IRequest], ISession)
-    provideUtility(CookieClientIdManager(), IClientIdManager)
-    sdc = session_data_container_class()
-    provideUtility(sdc, ISessionDataContainer, '')
+# def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
+#     setUp()
+#     provideAdapter(TestClientId, [IRequest], IClientId)
+#     provideAdapter(Session, [IRequest], ISession)
+#     provideUtility(CookieClientIdManager(), IClientIdManager)
+#     sdc = session_data_container_class()
+#     provideUtility(sdc, ISessionDataContainer, '')
 
 def nonHTTPSessionTestCaseSetUp(sdc_class=PersistentSessionDataContainer):
     # I am getting an error with ClientId and not TestClientId
@@ -175,11 +168,11 @@ class NonHTTPSessionTestCase(unittest.TestCase):
 
         self.assertEqual(plugin.logout(base.TestRequest('/')), False)
 
-class LoginLogout(object):
-    # Dummy implementation of zope.app.security.browser.auth.LoginLogout
+class TestPlacesssetup(unittest.TestCase):
 
-    def __call__(self):
-        return None
+    def test_runs(self):
+        from zope.app.authentication import placelesssetup
+        placelesssetup.PlacelessSetup().setUp()
 
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserPublisher
@@ -293,8 +286,8 @@ def test_suite():
                              optionflags=flags,
                              checker=checker,
                              ),
-        unittest.makeSuite(NonHTTPSessionTestCase),
-        ))
+        unittest.defaultTestLoader.loadTestsFromName(__name__)
+    ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

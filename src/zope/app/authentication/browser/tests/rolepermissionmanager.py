@@ -15,7 +15,7 @@
 """
 
 from zope.interface import implementer
-from zope.securitypolicy.interfaces import Allow, Deny, Unset
+from zope.securitypolicy.interfaces import Allow, Deny
 from zope.securitypolicy.interfaces import IRolePermissionManager
 from zope.securitypolicy.interfaces import IRolePermissionMap
 from zope.securitypolicy.securitymap import SecurityMap
@@ -51,32 +51,22 @@ class RolePermissionManager(object):
         rp = self._getRolePermissions()
         if rp:
             return rp.getRow(permission_id)
-        else:
-            return []
+        raise NotImplementedError("Should never get here")
 
     def getPermissionsForRole(self, role_id):
         '''See interface IRolePermissionMap'''
         rp = self._getRolePermissions()
         if rp:
             return rp.getCol(role_id)
-        else:
-            return []
+        raise NotImplementedError("Should never get here")
 
     def getRolesAndPermissions(self):
         '''See interface IRolePermissionMap'''
-        rp = self._getRolePermissions()
-        if rp:
-            return rp.getAllCells()
-        else:
-            return []
+        raise NotImplementedError("Not used by tests")
 
     def getSetting(self, permission_id, role_id):
         '''See interface IRolePermissionMap'''
-        rp = self._getRolePermissions()
-        if rp:
-            return rp.queryCell(permission_id, role_id)
-        else:
-            return Unset
+        raise NotImplementedError("Not used by tests")
 
     def _getRolePermissions(self, create=0):
         """Get the role permission map stored in the context, optionally

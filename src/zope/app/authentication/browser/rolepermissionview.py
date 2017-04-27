@@ -34,6 +34,11 @@ class RolePermissionView(object):
         Roles are shown accross the top.
         """)
 
+    request = None
+    context = None
+    _roles = None
+    _permissions = None
+
     def pagetip(self):
         return translate(self._pagetip, context=self.request)
 
@@ -68,10 +73,8 @@ class RolePermissionView(object):
                 {'id': Deny.getName(), 'shorttitle': '-',
                  'title': _('permission-deny', 'Deny')},
                 ]
-        if noacquire:
-            return rest
-        else:
-            return [aq]+rest
+
+        return rest if noacquire else [aq] + rest
 
     def permissionRoles(self):
         context = self.context.__parent__
@@ -113,7 +116,7 @@ class RolePermissionView(object):
                         elif setting == Deny.getName():
                             prm.denyPermissionToRole(rperm, rrole)
                         else:
-                            raise ValueError("Incorrect setting: %s" % setting)
+                            raise ValueError("Incorrect setting: %s" % setting) # pragma: no cover
             changed = True
 
         if 'SUBMIT_PERMS' in self.request:
@@ -171,23 +174,20 @@ class PermissionRoles(object):
 
     def __init__(self, permission, context, roles):
         self._permission = permission
-        self._context    = context
-        self._roles      = roles
+        self._context = context
+        self._roles = roles
 
-    def _getId(self):
+    @property
+    def id(self):
         return self._permission.id
 
-    id = property(_getId)
-
-    def _getTitle(self):
+    @property
+    def title(self):
         return self._permission.title
 
-    title = property(_getTitle)
-
-    def _getDescription(self):
+    @property
+    def description(self):
         return self._permission.description
-
-    description = property(_getDescription)
 
     def roleSettings(self):
         """
@@ -209,20 +209,17 @@ class RolePermissions(object):
         self._context = context
         self._permissions = permissions
 
-    def _getId(self):
+    @property
+    def id(self):
         return self._role.id
 
-    id = property(_getId)
-
-    def _getTitle(self):
+    @property
+    def title(self):
         return self._role.title
 
-    title = property(_getTitle)
-
-    def _getDescription(self):
+    @property
+    def description(self):
         return self._role.description
-
-    description = property(_getDescription)
 
     def permissionsInfo(self):
         prm = IRolePermissionManager(self._context)

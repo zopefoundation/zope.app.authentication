@@ -42,8 +42,6 @@ try:
 except NameError:
     text_type = str
 
-import base64
-
 settings_vocabulary = GrantVocabulary([
     SimpleTerm(Allow, token="allow", title=_('Allow')),
     SimpleTerm(Unset, token="unset", title=_('Unset')),
@@ -114,16 +112,12 @@ class GrantWidget(RadioWidget):
     def renderItems(self, value):
         # check if we want to select first item, the previously selected item
         # or the "no value" item.
-        no_value = None
         if (value == self.context.missing_value
             and getattr(self, 'firstItem', False)
             and len(self.vocabulary) > 0):
             if self.context.required:
                 # Grab the first item from the iterator:
-                values = [iter(self.vocabulary).next().value]
-            else:
-                # the "no value" option will be checked
-                no_value = 'checked'
+                values = [next(iter(self.vocabulary)).value]
         elif value != self.context.missing_value:
             values = [value]
         else:
@@ -150,6 +144,9 @@ class Granting(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        self.permissions = None
+        self.roles = None
+        self.principal_widget = None
 
     def status(self):
         setUpWidget(self, 'principal', self.principal_field, IInputWidget)
@@ -181,7 +178,7 @@ class Granting(object):
                                        vocabulary=settings_vocabulary)
             setUpWidget(self, name, field, IInputWidget,
                         principal_roles.getSetting(role.id, principal))
-            self.roles.append(getattr(self, name+'_widget'))
+            self.roles.append(getattr(self, name + '_widget'))
 
         perms = [perm for name, perm in getUtilitiesFor(IPermission)]
         perms.sort(key=lambda x: x.title)
@@ -191,7 +188,7 @@ class Granting(object):
         for perm in perms:
             if perm.id == 'zope.Public':
                 continue
-            name = principal_token + '.permission.'+perm.id
+            name = principal_token + '.permission.' + perm.id
             field = zope.schema.Choice(__name__=name,
                                        title=perm.title,
                                        vocabulary=settings_vocabulary)
@@ -204,12 +201,12 @@ class Granting(object):
             return u''
 
         for role in roles:
-            name = principal_token + '.role.'+role.id
-            role_widget = getattr(self, name+'_widget')
+            name = principal_token + '.role.' + role.id
+            role_widget = getattr(self, name + '_widget')
             if role_widget.hasInput():
                 try:
                     setting = role_widget.getInputValue()
-                except MissingInputError:
+                except MissingInputError: # pragma: no cover
                     pass
                 else:
                     # Arrgh!
@@ -227,11 +224,11 @@ class Granting(object):
             if perm.id == 'zope.Public':
                 continue
             name = principal_token + '.permission.'+perm.id
-            perm_widget = getattr(self, name+'_widget')
+            perm_widget = getattr(self, name + '_widget')
             if perm_widget.hasInput():
                 try:
                     setting = perm_widget.getInputValue()
-                except MissingInputError:
+                except MissingInputError: # pragma: no cover
                     pass
                 else:
                     # Arrgh!

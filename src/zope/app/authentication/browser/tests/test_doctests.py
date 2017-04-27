@@ -45,14 +45,12 @@ class FunkTest(unittest.TestCase):
 
     def publish(self, path, basic=None, form=None, headers=None):
         assert basic
+        assert form
         self._testapp.authorization = ('Basic', tuple(basic.split(':')))
 
         env = {'wsgi.handleErrors': False}
-        if form:
-            response = self._testapp.post(path, params=form,
-                                          extra_environ=env, headers=headers)
-        else:
-            response = self._testapp.get(path, extra_environ=env, headers=headers)
+        response = self._testapp.post(path, params=form,
+                                      extra_environ=env, headers=headers)
         return response
 
     def getRootFolder(self):
@@ -85,15 +83,15 @@ class FunkTest(unittest.TestCase):
 
 
         # Try to paste the file
-        try:
-            response = self.publish('/pf/@@contents.html',
-                                    basic='mgr:mgrpw',
-                                    form={'container_paste_button': ''})
-            self.fail("Should raise exception")
-        except UserError as e:
-            self.assertIn("The given name(s)", str(e))
-            self.assertIn("p1", str(e))
-            self.assertIn("are already being used", str(e))
+        with self.assertRaises(UserError) as r:
+            self.publish('/pf/@@contents.html',
+                         basic='mgr:mgrpw',
+                         form={'container_paste_button': ''})
+
+        e = r.exception
+        self.assertIn("The given name(s)", str(e))
+        self.assertIn("p1", str(e))
+        self.assertIn("are already being used", str(e))
 
     def test_cutpaste_duplicated_id_object(self):
 
@@ -122,15 +120,15 @@ class FunkTest(unittest.TestCase):
 
 
         # Try to paste the file
-        try:
-            response = self.publish('/pf/@@contents.html',
-                                    basic='mgr:mgrpw',
-                                    form={'container_paste_button': ''})
-            self.fail("Should raise UserError")
-        except UserError as e:
-            self.assertIn("The given name(s)", str(e))
-            self.assertIn("p1", str(e))
-            self.assertIn("are already being used", str(e))
+        with self.assertRaises(UserError) as r:
+            self.publish('/pf/@@contents.html',
+                         basic='mgr:mgrpw',
+                         form={'container_paste_button': ''})
+
+        e = r.exception
+        self.assertIn("The given name(s)", str(e))
+        self.assertIn("p1", str(e))
+        self.assertIn("are already being used", str(e))
 
 
 checker = renormalizing.RENormalizing([
