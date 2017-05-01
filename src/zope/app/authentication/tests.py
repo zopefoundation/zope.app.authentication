@@ -13,102 +13,96 @@
 ##############################################################################
 """Pluggable Authentication Service Tests
 """
-from __future__ import absolute_import
 __docformat__ = "reStructuredText"
 
-import unittest
-
 import doctest
-from zope.interface import implementer
-from zope.component import provideUtility, provideAdapter, provideHandler
-from zope.component.eventtesting import getEvents, clearEvents
-from zope.component.testing import tearDown
-from zope.component.testing import PlacelessSetup as CAPlacelessSetup
-from zope.component.eventtesting import PlacelessSetup as EventPlacelessSetup
+import unittest
+import re
 
-from zope.publisher.interfaces import IRequest
-
-from zope.session.interfaces import \
-        IClientId, IClientIdManager, ISession, ISessionDataContainer
-from zope.session.session import \
-        ClientId, Session, PersistentSessionDataContainer
-from zope.session.http import CookieClientIdManager
-
-from zope.publisher import base
-from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
-
-import zope.component.hooks
-
+from zope import component
 from zope.annotation.attribute import AttributeAnnotations
-def setUpAnnotations():
-    zope.component.provideAdapter(AttributeAnnotations)
+from zope.authentication.interfaces import IAuthentication
+from zope.browsermenu.menu import getFirstMenuItem
 
+from zope.component import getUtility
+from zope.component import provideUtility, provideAdapter, provideHandler
+from zope.component.eventtesting import PlacelessSetup as EventPlacelessSetup
+from zope.component.eventtesting import getEvents, clearEvents
+from zope.component.hooks import setSite
+from zope.component.hooks import setHooks
+from zope.component.hooks import resetHooks
+from zope.component.interfaces import IComponentLookup
+from zope.component.interfaces import ISite
+from zope.component.testing import tearDown
 
-from zope.traversing.interfaces import ITraversable
-import zope.traversing.api
 from zope.container.interfaces import ISimpleReadContainer
 from zope.container.traversal import ContainerTraversable
-def setUpTraversal():
-    from zope.traversing.testing import setUp
-    setUp()
-    zope.component.provideAdapter(ContainerTraversable,
-                                  (ISimpleReadContainer,), ITraversable)
 
-from zope.site.site import SiteManagerAdapter
-from zope.component.interfaces import IComponentLookup
 from zope.interface import Interface
-def setUpSiteManagerLookup():
-    zope.component.provideAdapter(SiteManagerAdapter, (Interface,),
-                                  IComponentLookup)
-
-from zope.site.folder import rootFolder
-
-from zope.site.site import LocalSiteManager
-import zope.component.interfaces
-
-def createSiteManager(folder, setsite=False):
-    if not zope.component.interfaces.ISite.providedBy(folder):
-        folder.setSiteManager(LocalSiteManager(folder))
-    if setsite:
-        zope.component.hooks.setSite(folder)
-    return zope.traversing.api.traverse(folder, "++etc++site")
+from zope.interface import implementer
 
 from zope.password.testing import setUpPasswordManagers
-from zope.container.testing import PlacelessSetup as ContainerPlacelessSetup
-from zope.schema.vocabulary import setVocabularyRegistry
-from zope.i18n.testing import PlacelessSetup as I18nPlacelessSetup
+from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
 
-class PlacelessSetup(CAPlacelessSetup,
-                     EventPlacelessSetup,
-                     I18nPlacelessSetup,
-                     ContainerPlacelessSetup):
+from zope.publisher import base
+from zope.publisher.browser import BrowserPage
+from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces import IRequest
+from zope.publisher.interfaces.browser import IBrowserPublisher
+
+from zope.session.http import CookieClientIdManager
+from zope.session.interfaces import IClientId, IClientIdManager, ISession, ISessionDataContainer
+from zope.session.session import ClientId, Session, PersistentSessionDataContainer
+
+from zope.site.folder import rootFolder
+from zope.site.site import LocalSiteManager
+from zope.site.site import SiteManagerAdapter
+
+from zope.testing import renormalizing
+from zope.testing.cleanup import CleanUp
+
+from zope.traversing import api as traversing
+from zope.traversing.interfaces import ITraversable
+
+
+def setUpTraversal():
+    from zope.traversing.testing import setUp as tSetUp
+    tSetUp()
+    component.provideAdapter(ContainerTraversable,
+                             (ISimpleReadContainer,),
+                             ITraversable)
+
+def setUpAnnotations():
+    component.provideAdapter(AttributeAnnotations)
+
+def setUpSiteManagerLookup():
+    component.provideAdapter(SiteManagerAdapter,
+                             (Interface,),
+                             IComponentLookup)
+
+def createSiteManager(folder, setsite=False):
+    if not ISite.providedBy(folder):
+        folder.setSiteManager(LocalSiteManager(folder))
+    if setsite:
+        setSite(folder)
+    return traversing.traverse(folder, "++etc++site")
+
+
+class PlacelessSetup(EventPlacelessSetup,
+                     CleanUp):
 
     def setUp(self, doctesttest=None):
-        CAPlacelessSetup.setUp(self)
         EventPlacelessSetup.setUp(self)
-        ContainerPlacelessSetup.setUp(self)
-        I18nPlacelessSetup.setUp(self)
 
         setUpPasswordManagers()
-        #ztapi.browserView(None, 'absolute_url', AbsoluteURL)
-        #ztapi.browserViewProviding(None, AbsoluteURL, IAbsoluteURL)
 
-        from zope.security.testing import addCheckerPublic
-        addCheckerPublic()
-
-        from zope.security.management import newInteraction
-        newInteraction()
-
-        setVocabularyRegistry(None)
 
 setUp = PlacelessSetup().setUp
 
 def placefulSetUp(site=False):
     PlacelessSetup().setUp()
-    zope.component.hooks.setHooks()
-    setUpAnnotations()
+    setHooks()
     setUpTraversal()
-    setUpSiteManagerLookup()
 
     if site:
         site = rootFolder()
@@ -117,22 +111,14 @@ def placefulSetUp(site=False):
 
 def placefulTearDown():
     PlacelessSetup().tearDown()
-    zope.component.hooks.resetHooks()
-    zope.component.hooks.setSite()
+    resetHooks()
+    setSite()
 
 def siteSetUp(test):
     placefulSetUp(site=True)
 
 def siteTearDown(test):
     placefulTearDown()
-
-# def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
-#     setUp()
-#     provideAdapter(TestClientId, [IRequest], IClientId)
-#     provideAdapter(Session, [IRequest], ISession)
-#     provideUtility(CookieClientIdManager(), IClientIdManager)
-#     sdc = session_data_container_class()
-#     provideUtility(sdc, ISessionDataContainer, '')
 
 def nonHTTPSessionTestCaseSetUp(sdc_class=PersistentSessionDataContainer):
     # I am getting an error with ClientId and not TestClientId
@@ -174,9 +160,6 @@ class TestPlacesssetup(unittest.TestCase):
         from zope.app.authentication import placelesssetup
         placelesssetup.PlacelessSetup().setUp()
 
-from zope.publisher.browser import BrowserView
-from zope.publisher.interfaces.browser import IBrowserPublisher
-from zope.browsermenu.menu import getFirstMenuItem
 
 
 @implementer(IBrowserPublisher)
@@ -201,10 +184,6 @@ class ManagementViewSelector(BrowserView):
             return u''
         raise AssertionError("Should not get here") # pragma: no cover
 
-from zope.authentication.interfaces import IAuthentication
-from zope.component import getUtility
-from zope.publisher.browser import BrowserPage
-
 
 class Unauthorized(BrowserPage):
 
@@ -227,9 +206,6 @@ class Unauthorized(BrowserPage):
         if self.request.response.getStatus() not in (302, 303):
             return self.template()
 
-from zope.testing import renormalizing
-
-import re
 checker = renormalizing.RENormalizing([
     (re.compile("u('[^']*?')"), r"\1"),
     (re.compile('u("[^"]*?")'), r"\1"),

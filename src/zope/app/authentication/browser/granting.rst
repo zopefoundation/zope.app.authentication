@@ -6,7 +6,7 @@ principals. The view unfortunately depends on a lot of other components:
 
   - Roles
 
-    >>> from zope.app.authentication import testing as ztapi
+    >>> from zope.app.authentication.browser import tests as ztapi
     >>> from zope.securitypolicy.role import Role
     >>> from zope.securitypolicy.interfaces import IRole
     >>> ztapi.provideUtility(IRole, Role(u'role1', u'Role 1'), u'role1')
@@ -103,7 +103,7 @@ principals. The view unfortunately depends on a lot of other components:
 
   - Attribute Annotatable Adapter
 
-    >>> from zope.app.authentication import testing as setup
+    >>> from zope.app.authentication import tests as setup
     >>> setup.setUpAnnotations()
     >>> setup.setUpSiteManagerLookup()
 

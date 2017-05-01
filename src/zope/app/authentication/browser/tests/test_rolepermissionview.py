@@ -25,7 +25,7 @@ from zope.exceptions.interfaces import UserError
 from zope.security.permission import Permission
 from zope.security.interfaces import IPermission
 
-from zope.app.authentication import testing as ztapi
+from zope.app.authentication.browser import tests as ztapi
 from zope.component.testing import PlacelessSetup as PlacefulSetup
 
 from zope.securitypolicy.role import Role
