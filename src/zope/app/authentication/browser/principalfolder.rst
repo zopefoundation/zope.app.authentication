@@ -88,19 +88,21 @@ the users folder as the authenticator plugin, and the session utility as the cre
   ...  r"""UPDATE_SUBMIT=Change&field.credentialsPlugins=U2Vzc2lvbiBDcmVkZW50aWFscw==&field.authenticatorPlugins=dXNlcnM="""
   ...  """&field.credentialsPlugins.to=U2Vzc2lvbiBDcmVkZW50aWFscw==&field.authenticatorPlugins.to=dXNlcnM=""")
 
-Now, with this in place, Bob can log in, but he isn't allowed to
-access the management interface. When he attempts to do so, the PAU
-issues a challenge to let bob login as a different user
+Now, with this in place, Bob can log in (incidentally , if Bob
+accidentally sends two values for the ``camefrom`` parameter, only the
+first is respected):
 
-  >>> bob_browser.open("/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F")
+  >>> bob_browser.open("/@@loginForm.html?camefrom=http%3A%2F%2Flocalhost%2F&camefrom=foo")
   >>> bob_browser.getControl(name="login").value = 'bob'
   >>> bob_browser.getControl(name="password").value = 'bob'
   >>> bob_browser.getControl(name="SUBMIT").click()
   >>> print(bob_browser.url)
   http://localhost/
 
-When he attempts to do so, the PAU issues a challenge to let bob login
-as a different user
+
+However, Bob isn't allowed to access the management interface. When he
+attempts to do so, the PAU issues a challenge to let bob login as a
+different user:
 
   >>> bob_browser.open("/+")
   >>> print(bob_browser.url)

@@ -32,10 +32,9 @@ class LoginForm(object):
         self.unauthenticated = unauthenticated
 
         camefrom = request.get('camefrom')
-        if isinstance(camefrom, list): # pragma: no cover
-            # this can happen on python2.6, as it changed the
-            # behaviour of cgi.FieldStorage a bit.
-            # XXX: Just Python 2.6 or later too? Tests don't produce this.
+        if isinstance(camefrom, list):
+            # Beginning on python2.6 this happens if the parameter is
+            # supplied more than once
             camefrom = camefrom[0]
         self.camefrom = camefrom
 
