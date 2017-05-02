@@ -12,17 +12,14 @@
 #
 ##############################################################################
 """Improved registration UI for registering pluggable authentication utilities
-
-$Id$
 """
 
 from zope.app.authentication.i18n import ZopeMessageFactory as _
-import zope.app.component.browser.registration
-import zope.authentication.interfaces
+from zope.app.component.browser.registration import AddUtilityRegistration
+from zope.authentication.interfaces import IAuthentication
 
-class AddAuthenticationRegistration(
-    zope.app.component.browser.registration.AddUtilityRegistration,
-    ):
+class AddAuthenticationRegistration(AddUtilityRegistration):
+
     label = _("Register a pluggable authentication utility")
     name = ''
-    provided = zope.authentication.interfaces.IAuthentication
+    provided = IAuthentication

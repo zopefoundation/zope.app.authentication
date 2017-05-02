@@ -13,7 +13,6 @@
 ##############################################################################
 """Search interface for queriables.
 
-$Id$
 """
 __docformat__ = "reStructuredText"
 
@@ -23,7 +22,7 @@ from zope.formlib.interfaces import ISourceQueryView
 from zope.formlib.interfaces import WidgetsError, MissingInputError
 from zope.formlib.utility import setUpWidgets
 from zope.i18n import translate
-from zope.interface import implements
+from zope.interface import implementer
 from zope.schema import getFieldsInOrder
 from zope.traversing.api import getName, getPath
 
@@ -32,8 +31,8 @@ search_label = _('search-button', 'Search')
 source_label = _(u"Source path")
 source_title = _(u"Path to the source utility")
 
+@implementer(ISourceQueryView)
 class QuerySchemaSearchView(object):
-    implements(ISourceQueryView)
 
     def __init__(self, context, request):
         self.context = context
@@ -68,7 +67,7 @@ class QuerySchemaSearchView(object):
         # start row for search fields
         html.append('<div class="row">')
 
-        for field_name, field in getFieldsInOrder(schema):
+        for field_name, _field in getFieldsInOrder(schema):
             widget = getattr(self, field_name+'_widget')
 
             # for each field add label...
@@ -83,7 +82,7 @@ class QuerySchemaSearchView(object):
             html.append('  <div class="field">')
             html.append('    %s' % widget())
 
-            if widget.error():
+            if widget.error(): # pragma: no cover
                 html.append('    <div class="error">')
                 html.append('      %s' % widget.error())
                 html.append('    </div>')
@@ -103,25 +102,25 @@ class QuerySchemaSearchView(object):
         return '\n'.join(html)
 
     def results(self, name):
-        if not (name+'.search' in self.request):
+        if (name + '.search') not in self.request:
             return None
         schema = self.context.schema
-        setUpWidgets(self, schema, IInputWidget, prefix=name+'.field')
+        setUpWidgets(self, schema, IInputWidget, prefix=name + '.field')
         # XXX inline the original getWidgetsData call in
         # zope.app.form.utility to lift the dependency on zope.app.form.
         data = {}
         errors = []
-        for name, field in getFieldsInOrder(schema):
-            widget = getattr(self, name + '_widget')
+        for widget_name, field in getFieldsInOrder(schema):
+            widget = getattr(self, widget_name + '_widget')
             if IInputWidget.providedBy(widget):
                 if widget.hasInput():
                     try:
-                        data[name] = widget.getInputValue()
-                    except InputErrors, error:
+                        data[widget_name] = widget.getInputValue()
+                    except InputErrors as error: # pragma: no cover
                         errors.append(error)
-                elif field.required:
+                elif field.required: # pragma: no cover
                     errors.append(MissingInputError(
-                        name, widget.label, 'the field is required'))
-        if errors:
+                        widget_name, widget.label, 'the field is required'))
+        if errors: # pragma: no cover
             raise WidgetsError(errors, widgetsData=data)
         return self.context.search(data)

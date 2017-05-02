@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication Service Placeless Setup
 
-$Id$
+Deprecated and moved to zope.password.testing.
 """
 __docformat__ = "reStructuredText"
 

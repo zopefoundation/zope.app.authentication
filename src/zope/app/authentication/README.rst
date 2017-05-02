@@ -50,9 +50,9 @@ To illustrate, we'll create a simple credentials plugin::
   >>> from zope import interface
   >>> from zope.app.authentication import interfaces
 
-  >>> class MyCredentialsPlugin(object):
+  >>> @interface.implementer(interfaces.ICredentialsPlugin)
+  ... class MyCredentialsPlugin(object):
   ...
-  ...     interface.implements(interfaces.ICredentialsPlugin)
   ...
   ...     def extractCredentials(self, request):
   ...         return request.get('credentials')
@@ -74,9 +74,8 @@ Simple Authenticator Plugin
 Next we'll create a simple authenticator plugin. For our plugin, we'll need
 an implementation of IPrincipalInfo::
 
-  >>> class PrincipalInfo(object):
-  ...
-  ...     interface.implements(interfaces.IPrincipalInfo)
+  >>> @interface.implementer(interfaces.IPrincipalInfo)
+  ... class PrincipalInfo(object):
   ...
   ...     def __init__(self, id, title, description):
   ...         self.id = id
@@ -88,9 +87,8 @@ an implementation of IPrincipalInfo::
 
 Our authenticator uses this type when it creates a principal info::
 
-  >>> class MyAuthenticatorPlugin(object):
-  ...
-  ...     interface.implements(interfaces.IAuthenticatorPlugin)
+  >>> @interface.implementer(interfaces.IAuthenticatorPlugin)
+  ... class MyAuthenticatorPlugin(object):
   ...
   ...     def authenticateCredentials(self, credentials):
   ...         if credentials == 'secretcode':
@@ -137,13 +135,13 @@ Using the PAU to Authenticate
 We can now use the PAU to authenticate a sample request::
 
   >>> from zope.publisher.browser import TestRequest
-  >>> print pau.authenticate(TestRequest())
+  >>> print(pau.authenticate(TestRequest()))
   None
 
 In this case, we cannot authenticate an empty request. In the same way, we
 will not be able to authenticate a request with the wrong credentials::
 
-  >>> print pau.authenticate(TestRequest(credentials='let me in!'))
+  >>> print(pau.authenticate(TestRequest(credentials='let me in!')))
   None
 
 However, if we provide the proper credentials::
@@ -237,7 +235,7 @@ Then it will be given the first opportunity to authenticate a request::
 
 If neither plugins can authenticate, pau returns None::
 
-  >>> print pau.authenticate(TestRequest(credentials='let me in!!'))
+  >>> print(pau.authenticate(TestRequest(credentials='let me in!!')))
   None
 
 When we change the order of the authenticator plugins::
@@ -263,9 +261,8 @@ As with with authenticators, we can specify multiple credentials plugins. To
 illustrate, we'll create a credentials plugin that extracts credentials from
 a request form::
 
-  >>> class FormCredentialsPlugin:
-  ...
-  ...     interface.implements(interfaces.ICredentialsPlugin)
+  >>> @interface.implementer(interfaces.ICredentialsPlugin)
+  ... class FormCredentialsPlugin:
   ...
   ...     def extractCredentials(self, request):
   ...         return request.form.get('my_credentials')
@@ -363,25 +360,24 @@ principal with a principal ID. The PAU looks up a principal by delegating to
 its authenticators. In our example, none of the authenticators implement this
 search capability, so when we look for a principal::
 
-  >>> print pau.getPrincipal('xyz_bob')
+  >>> print(pau.getPrincipal('xyz_bob'))
   Traceback (most recent call last):
-  PrincipalLookupError: bob
+  zope.authentication.interfaces.PrincipalLookupError: bob
 
-  >>> print pau.getPrincipal('white')
+  >>> print(pau.getPrincipal('white'))
   Traceback (most recent call last):
-  PrincipalLookupError: white
+  zope.authentication.interfaces.PrincipalLookupError: white
 
-  >>> print pau.getPrincipal('black')
+  >>> print(pau.getPrincipal('black'))
   Traceback (most recent call last):
-  PrincipalLookupError: black
+  zope.authentication.interfaces.PrincipalLookupError: black
 
 For a PAU to support search, it needs to be configured with one or more
 authenticator plugins that support search. To illustrate, we'll create a new
 authenticator::
 
-  >>> class SearchableAuthenticatorPlugin:
-  ...
-  ...     interface.implements(interfaces.IAuthenticatorPlugin)
+  >>> @interface.implementer(interfaces.IAuthenticatorPlugin)
+  ... class SearchableAuthenticatorPlugin:
   ...
   ...     def __init__(self):
   ...         self.infos = {}
@@ -425,9 +421,9 @@ Now when we ask the PAU to find a principal::
 
 but only those it knows about::
 
-  >>> print pau.getPrincipal('black')
+  >>> print(pau.getPrincipal('black'))
   Traceback (most recent call last):
-  PrincipalLookupError: black
+  zope.authentication.interfaces.PrincipalLookupError: black
 
 Found Principal Creates Events
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -726,9 +722,8 @@ the PAU prefix to any principal IDs returned in a search.
 
 Next, we'll create a plugin that provides a search interface::
 
-  >>> class QueriableAuthenticatorPlugin(MyAuthenticatorPlugin):
-  ...
-  ...     interface.implements(interfaces.IQuerySchemaSearch)
+  >>> @interface.implementer(interfaces.IQuerySchemaSearch)
+  ... class QueriableAuthenticatorPlugin(MyAuthenticatorPlugin):
   ...
   ...     schema = None
   ...
@@ -770,9 +765,8 @@ QuerySchemaSearchAdapter's __parent__ is the same as the __parent__ of the
 plugin::
 
   >>> import zope.location.interfaces
-  >>> class LocatedQueriableAuthenticatorPlugin(QueriableAuthenticatorPlugin):
-  ...
-  ...     interface.implements(zope.location.interfaces.ILocation)
+  >>> @interface.implementer(zope.location.interfaces.ILocation)
+  ... class LocatedQueriableAuthenticatorPlugin(QueriableAuthenticatorPlugin):
   ...
   ...     __parent__ = __name__ = None
   ...

@@ -25,8 +25,9 @@ others in a faux PAU.
 
     >>> from zope.app.authentication import interfaces
     >>> from zope import interface, component
-    >>> class DemoPlugin(object):
-    ...     interface.implements(interfaces.IAuthenticatorPlugin)
+    >>> @interface.implementer(interfaces.IAuthenticatorPlugin)
+    ... class DemoPlugin(object):
+    ...
     ...     def __init__(self, name):
     ...         self.name = name
     ...
@@ -41,8 +42,9 @@ others in a faux PAU.
     ...
     >>> sorted(contained_plugins.keys()) # 1 will mask utility plugin 1
     [1, 2, 3, 4]
-    >>> class DemoAuth(dict):
-    ...     interface.implements(interfaces.IPluggableAuthentication)
+    >>> @interface.implementer(interfaces.IPluggableAuthentication)
+    ... class DemoAuth(dict):
+    ...
     ...     def __init__(self, *args, **kwargs):
     ...         super(DemoAuth, self).__init__(*args, **kwargs)
     ...         self.authenticatorPlugins = (u'Plugin 3', u'Plugin X')
@@ -108,10 +110,9 @@ functionality.
     ...     pass
     ...
     >>> interface.directlyProvides(contained_plugins[1], ISpecial)
-    >>> class DemoDCAdapter(object):
-    ...     interface.implements(
-    ...         zope.dublincore.interfaces.IDCDescriptiveProperties)
-    ...     component.adapts(ISpecial)
+    >>> @interface.implementer(zope.dublincore.interfaces.IDCDescriptiveProperties)
+    ... @component.adapter(ISpecial)
+    ... class DemoDCAdapter(object):
     ...     def __init__(self, context):
     ...         pass
     ...     title = u'Special Title'
@@ -141,8 +142,9 @@ credentialsPlugins
 
 For completeness, we'll do the same review of the credentialsPlugins.
 
-    >>> class DemoPlugin(object):
-    ...     interface.implements(interfaces.ICredentialsPlugin)
+    >>> @interface.implementer(interfaces.ICredentialsPlugin)
+    ... class DemoPlugin(object):
+    ...
     ...     def __init__(self, name):
     ...         self.name = name
     ...

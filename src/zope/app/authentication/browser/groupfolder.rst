@@ -15,7 +15,7 @@ Let's walk through an example.
 
 First, We need to create and register a pluggable authentication utility.
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/@@contents.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 98
@@ -23,22 +23,22 @@ First, We need to create and register a pluggable authentication utility.
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
   ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication
   ...
-  ... type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication&new_value=PAU""")
+  ... type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication&new_value=PAU"""))
   HTTP/1.1 303 See Other
   ...
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... GET /++etc++site/default/PAU/@@registration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
   ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication
-  ... """)
+  ... """))
   HTTP/1.1 200 OK
   ...
 
 Register PAU.
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/addRegistration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 687
@@ -49,19 +49,19 @@ Register PAU.
   ... -----------------------------5559795404609280911441883437
   ... Content-Disposition: form-data; name="field.comment"
   ...
-  ... 
+  ...
   ... -----------------------------5559795404609280911441883437
   ... Content-Disposition: form-data; name="field.actions.register"
   ...
   ... Register
   ... -----------------------------5559795404609280911441883437--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 Add a Principal folder plugin `users` to PAU.
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/+/AddPrincipalFolder.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 429
@@ -82,13 +82,13 @@ Add a Principal folder plugin `users` to PAU.
   ...
   ... users
   ... -----------------------------95449631112274213651507932125--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 Next we will add some users.
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 780
@@ -125,13 +125,13 @@ Next we will add some users.
   ...
   ...
   ... -----------------------------5110544421083023415453147877--
-  ... """)
+  ... """, handle_errors=False))
   HTTP/1.1 303 See Other
   ...
 
 
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 780
@@ -168,13 +168,13 @@ Next we will add some users.
   ...
   ...
   ... -----------------------------5110544421083023415453147877--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 780
@@ -211,13 +211,13 @@ Next we will add some users.
   ...
   ...
   ... -----------------------------5110544421083023415453147877--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 780
@@ -254,12 +254,12 @@ Next we will add some users.
   ...
   ...
   ... -----------------------------5110544421083023415453147877--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 780
@@ -296,12 +296,12 @@ Next we will add some users.
   ...
   ...
   ... -----------------------------5110544421083023415453147877--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 780
@@ -338,12 +338,12 @@ Next we will add some users.
   ...
   ...
   ... -----------------------------5110544421083023415453147877--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 780
@@ -380,13 +380,13 @@ Next we will add some users.
   ...
   ...
   ... -----------------------------5110544421083023415453147877--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 Next, We'll add out group folder plugin in PAU.
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/+/AddGroupFolder.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 427
@@ -406,14 +406,14 @@ Next, We'll add out group folder plugin in PAU.
   ...
   ... groups
   ... -----------------------------4150524541658557772058105275--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 
 Next we'll select the credentials and authenticators for the PAU:
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/@@configure.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 1313
@@ -457,7 +457,7 @@ Next we'll select the credentials and authenticators for the PAU:
   ...
   ... Z3JvdXBz
   ... -----------------------------2026736768606413562109112352--
-  ... """)
+  ... """))
   HTTP/1.1 200 OK
   ...
 
@@ -465,7 +465,7 @@ Next we'll select the credentials and authenticators for the PAU:
 
 Now, we can define some groups.  Let's start with a group named "Admin":
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/groups/+/AddGroupInformation.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 550
@@ -489,14 +489,14 @@ Now, we can define some groups.  Let's start with a group named "Admin":
   ...
   ... admin
   ... -----------------------------20619400354342370301249668954--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 
 That includes Betty, Mary and Mike:
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/groups/admin/@@edit.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 1509
@@ -544,7 +544,7 @@ That includes Betty, Mary and Mike:
   ...
   ...
   ... -----------------------------6981402699601872602121555350--
-  ... """)
+  ... """))
   HTTP/1.1 200 OK
   ...
 
@@ -552,7 +552,7 @@ That includes Betty, Mary and Mike:
 and a group "Power Users"
 
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/groups/+/AddGroupInformation.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 561
@@ -576,13 +576,13 @@ and a group "Power Users"
   ...
   ... power
   ... -----------------------------168380148515549442351132560943--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 with Bill and Betty as members:
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU/groups/power/@@edit.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 1729
@@ -626,7 +626,7 @@ with Bill and Betty as members:
   ...
   ... Change
   ... -----------------------------181944013812647128322134918391--
-  ... """)
+  ... """))
   HTTP/1.1 200 OK
   ...
 
@@ -649,11 +649,11 @@ power-user groups:
   >>> betty = principals.getPrincipal(u'users3')
   >>> betty.groups.sort()
   >>> betty.groups
-  [u'groupspower', 'zope.Authenticated', 'zope.Everybody']
+  ['groupspower', 'zope.Authenticated', 'zope.Everybody']
 
 
 And we'll get Bill, and see that he is only in the power-user group:
 
   >>> bill = principals.getPrincipal(u'users2')
   >>> bill.groups
-  ['zope.Everybody', 'zope.Authenticated', u'groupspower']
+  ['zope.Everybody', 'zope.Authenticated', 'groupspower']

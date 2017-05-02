@@ -13,13 +13,12 @@
 ##############################################################################
 """Role Permission View Classes
 
-$Id$
 """
 from datetime import datetime
 
 from zope.component import getUtilitiesFor, getUtility
 from zope.i18n import translate
-from zope.interface import implements
+from zope.interface import implementer
 from zope.exceptions.interfaces import UserError
 from zope.i18nmessageid import ZopeMessageFactory as _
 
@@ -34,6 +33,11 @@ class RolePermissionView(object):
         Permissions are shown on the left side, going down.
         Roles are shown accross the top.
         """)
+
+    request = None
+    context = None
+    _roles = None
+    _permissions = None
 
     def pagetip(self):
         return translate(self._pagetip, context=self.request)
@@ -69,10 +73,8 @@ class RolePermissionView(object):
                 {'id': Deny.getName(), 'shorttitle': '-',
                  'title': _('permission-deny', 'Deny')},
                 ]
-        if noacquire:
-            return rest
-        else:
-            return [aq]+rest
+
+        return rest if noacquire else [aq] + rest
 
     def permissionRoles(self):
         context = self.context.__parent__
@@ -114,7 +116,7 @@ class RolePermissionView(object):
                         elif setting == Deny.getName():
                             prm.denyPermissionToRole(rperm, rrole)
                         else:
-                            raise ValueError("Incorrect setting: %s" % setting)
+                            raise ValueError("Incorrect setting: %s" % setting) # pragma: no cover
             changed = True
 
         if 'SUBMIT_PERMS' in self.request:
@@ -167,29 +169,25 @@ class RolePermissionView(object):
         return status
 
 
+@implementer(IPermission)
 class PermissionRoles(object):
-
-    implements(IPermission)
 
     def __init__(self, permission, context, roles):
         self._permission = permission
-        self._context    = context
-        self._roles      = roles
+        self._context = context
+        self._roles = roles
 
-    def _getId(self):
+    @property
+    def id(self):
         return self._permission.id
 
-    id = property(_getId)
-
-    def _getTitle(self):
+    @property
+    def title(self):
         return self._permission.title
 
-    title = property(_getTitle)
-
-    def _getDescription(self):
+    @property
+    def description(self):
         return self._permission.description
-
-    description = property(_getDescription)
 
     def roleSettings(self):
         """
@@ -203,29 +201,25 @@ class PermissionRoles(object):
         nosetting = Unset.getName()
         return [settings.get(role.id, nosetting) for role in self._roles]
 
+@implementer(IRole)
 class RolePermissions(object):
-
-    implements(IRole)
 
     def __init__(self, role, context, permissions):
         self._role = role
         self._context = context
         self._permissions = permissions
 
-    def _getId(self):
+    @property
+    def id(self):
         return self._role.id
 
-    id = property(_getId)
-
-    def _getTitle(self):
+    @property
+    def title(self):
         return self._role.title
 
-    title = property(_getTitle)
-
-    def _getDescription(self):
+    @property
+    def description(self):
         return self._role.description
-
-    description = property(_getDescription)
 
     def permissionsInfo(self):
         prm = IRolePermissionManager(self._context)

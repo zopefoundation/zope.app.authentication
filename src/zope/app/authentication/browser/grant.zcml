@@ -9,7 +9,7 @@
   <!-- The role-permission mapping is really the domain of programmers -->
 
   <browser:pages
-      for="zope.app.component.interfaces.ILocalSiteManager"
+      for="zope.site.interfaces.ILocalSiteManager"
       permission="zope.Security"
       class=".rolepermissionview.RolePermissionView">
     <browser:page

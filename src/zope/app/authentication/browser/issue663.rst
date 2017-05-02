@@ -14,7 +14,7 @@ named "contents.html".
 In Zope3.2, PluggableAuthentication inherits
 SiteManagementFolder that provides "contents.html" view.
 
-    >>> from zope.testbrowser.testing import Browser
+    >>> from zope.testbrowser.wsgi import Browser
     >>> browser = Browser()
 
 Create a pau

@@ -7,7 +7,7 @@ PAUs that have prefixes.
 
 First we'll create a PAU with a prefix of `pau1_` and and register:
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/+/AddPluggableAuthentication.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 372
@@ -26,11 +26,11 @@ First we'll create a PAU with a prefix of `pau1_` and and register:
   ...
   ... PAU1
   ... -----------------------------318183180122653--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU1/addRegistration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 591
@@ -39,19 +39,19 @@ First we'll create a PAU with a prefix of `pau1_` and and register:
   ... -----------------------------516441125097
   ... Content-Disposition: form-data; name="field.comment"
   ...
-  ... 
+  ...
   ... -----------------------------516441125097
   ... Content-Disposition: form-data; name="field.actions.register"
   ...
   ... Register
   ... -----------------------------516441125097--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 Next we'll create and register a principal folder:
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU1/+/AddPrincipalFolder.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 374
@@ -70,13 +70,13 @@ Next we'll create and register a principal folder:
   ...
   ... Users
   ... -----------------------------266241536215161--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 and add a principal that we'll later search for:
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU1/Users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 686
@@ -111,13 +111,13 @@ and add a principal that we'll later search for:
   ...
   ...
   ... -----------------------------300171485226567--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 Next, we'll add and register a group folder:
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU1/+/AddGroupFolder.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 372
@@ -136,13 +136,13 @@ Next, we'll add and register a group folder:
   ...
   ... Groups
   ... -----------------------------17420126702455--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
 and add a group to search for:
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU1/Groups/+/AddGroupInformation.html%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 485
@@ -165,7 +165,7 @@ and add a group to search for:
   ...
   ... nice
   ... -----------------------------323081358415654--
-  ... """)
+  ... """))
   HTTP/1.1 303 See Other
   ...
 
@@ -175,7 +175,7 @@ group.
 Before we search, we need to register the two authenticator plugins with the
 PAU:
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /++etc++site/default/PAU1/@@configure.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 888
@@ -210,24 +210,24 @@ PAU:
   ...
   ... VXNlcnM=
   ... -----------------------------610310492754--
-  ... """)
+  ... """))
   HTTP/1.1 200 OK
   ...
 
 Now we'll use the 'grant' interface of the root folder to search for all of
 the available groups:
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /@@grant.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 191
   ... Content-Type: application/x-www-form-urlencoded
-  ... 
+  ...
   ... field.principal.displayed=y&"""
   ... "field.principal.MC5Hcm91cHM_.field.search=&"
   ... "field.principal.MC5Hcm91cHM_.search=Search&"
   ... "field.principal.MC5Vc2Vycw__.field.search=&"
-  ... "field.principal.MQ__.searchstring=")
+  ... "field.principal.MQ__.searchstring="))
   HTTP/1.1 200 OK
   ...
   <select name="field.principal.MC5Hcm91cHM_.selection">
@@ -241,7 +241,7 @@ single group 'Nice People' that we added earlier.
 Next, we'll use the same 'grant' interface to search for all of the available
 principals:
 
-  >>> print http(r"""
+  >>> print(http(r"""
   ... POST /@@grant.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 255
@@ -252,7 +252,7 @@ principals:
   ... "field.principal.MC5Hcm91cHM_.selection=cGF1MV9ncm91cHNfbmljZQ__&"
   ... "field.principal.MC5Vc2Vycw__.field.search=&"
   ... "field.principal.MC5Vc2Vycw__.search=Search&"
-  ... "field.principal.MQ__.searchstring=")
+  ... "field.principal.MQ__.searchstring="))
   HTTP/1.1 200 OK
   ...
   <select name="field.principal.MC5Vc2Vycw__.selection">

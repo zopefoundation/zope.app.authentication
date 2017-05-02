@@ -6,7 +6,7 @@ principals. The view unfortunately depends on a lot of other components:
 
   - Roles
 
-    >>> from zope.app.testing import ztapi
+    >>> from zope.app.authentication.browser import tests as ztapi
     >>> from zope.securitypolicy.role import Role
     >>> from zope.securitypolicy.interfaces import IRole
     >>> ztapi.provideUtility(IRole, Role(u'role1', u'Role 1'), u'role1')
@@ -31,9 +31,9 @@ principals. The view unfortunately depends on a lot of other components:
 
     >>> from zope.app.security.interfaces import IAuthentication
     >>> from zope.app.security.interfaces import PrincipalLookupError
-    >>> from zope.interface import implements
-    >>> class AuthUtility:
-    ...     implements(IAuthentication)
+    >>> from zope.interface import implementer
+    >>> @implementer(IAuthentication)
+    ... class AuthUtility(object):
     ...     data = {'jim': Principal('jim', 'Jim Fulton'),
     ...             'stephan': Principal('stephan', 'Stephan Richter')}
     ...
@@ -103,15 +103,15 @@ principals. The view unfortunately depends on a lot of other components:
 
   - Attribute Annotatable Adapter
 
-    >>> from zope.app.testing import setup
+    >>> from zope.app.authentication import tests as setup
     >>> setup.setUpAnnotations()
     >>> setup.setUpSiteManagerLookup()
 
   - Content Object
 
     >>> from zope.annotation.interfaces import IAttributeAnnotatable
-    >>> class Content:
-    ...     implements(IAttributeAnnotatable)
+    >>> @implementer(IAttributeAnnotatable)
+    ... class Content(object):
     ...     __annotations__ = {}
 
   (This is Jim's understanding of a "easy" setup!)
@@ -127,8 +127,8 @@ Now that we have all the components we need, let's create *the* view.
 
 If we call status, we get nothing and the view's principal attribute is `None`:
 
-  >>> view.status()
-  u''
+  >>> print(view.status())
+  <BLANKLINE>
   >>> view.principal
 
 Since we have not selected a principal, we have no role or permission widgets:
@@ -144,21 +144,21 @@ Now that we have a selected principal, then
 
 (Yes, 'amlt' is the base 64 code for 'jim'.)
 
-  >>> view.status()
-  u''
+  >>> print(view.status())
+  <BLANKLINE>
 
 and now the `view.principal` is set:
 
-  >>> view.principal
-  u'jim'
+  >>> print(view.principal)
+  jim
 
 Now we should have a list of role and permission widgets, and all of them
 should be unset, because do not have any settings for 'jim'.
 
-  >>> [role.context.title for role in view.roles]
-  [u'Role 1', u'Role 2', u'Role 3']
-  >>> [perm.context.title for perm in view.permissions]
-  [u'Permission 1', u'Permission 2', u'Permission 3']
+  >>> [str(role.context.title) for role in view.roles]
+  ['Role 1', 'Role 2', 'Role 3']
+  >>> [str(perm.context.title) for perm in view.permissions]
+  ['Permission 1', 'Permission 2', 'Permission 3']
 
 Now we change some settings and submit the form:
 
@@ -183,8 +183,8 @@ Now we change some settings and submit the form:
 If we get the status now, the data should be written and a status message
 should be returned:
 
-  >>> view.status()
-  u'Grants updated.'
+  >>> print(view.status())
+  Grants updated.
 
   >>> roles = IPrincipalRoleManager(ob)
   >>> roles.getSetting('role1', 'jim') is Unset

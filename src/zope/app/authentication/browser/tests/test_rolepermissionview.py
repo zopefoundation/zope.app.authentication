@@ -13,8 +13,8 @@
 ##############################################################################
 """Role-Permission View Tests
 
-$Id$
 """
+
 import unittest
 
 import zope.interface
@@ -25,22 +25,20 @@ from zope.exceptions.interfaces import UserError
 from zope.security.permission import Permission
 from zope.security.interfaces import IPermission
 
-from zope.app.testing import ztapi
-from zope.app.component.testing import PlacefulSetup
+from zope.app.authentication.browser import tests as ztapi
+from zope.component.testing import PlacelessSetup as PlacefulSetup
 
 from zope.securitypolicy.role import Role
 from zope.securitypolicy.interfaces import IRole
 
-from zope.app.authentication.browser.tests.rolepermissionmanager import \
-     RolePermissionManager
-from zope.app.authentication.browser.rolepermissionview import \
-     RolePermissionView
+from zope.app.authentication.browser.tests.rolepermissionmanager import RolePermissionManager
+from zope.app.authentication.browser.rolepermissionview import RolePermissionView
 
 class RolePermissionView(RolePermissionView, BrowserView):
     """Adding BrowserView to Utilities; this is usually done by ZCML."""
 
-class TranslationDomain:
-    zope.interface.implements(ITranslationDomain)
+@zope.interface.implementer(ITranslationDomain)
+class TranslationDomain(object):
 
     def __init__(self, **translations):
         self.translations = translations
@@ -59,7 +57,7 @@ def definePermission(id, title=None, description=None):
     ztapi.provideUtility(IPermission, permission, name=permission.id)
     return permission
 
-class FakeSiteManager:
+class FakeSiteManager(object):
 
     def __init__(self, site):
         self.__parent__ = site
@@ -104,20 +102,23 @@ class Test(PlacefulSetup, unittest.TestCase):
             }
         self.view.request = TestRequest(environ=env)
         self.view.update()
-        permissionRoles = self.view.permissionRoles()
-        for ip in range(len(permissionRoles)):
-            permissionRole = permissionRoles[ip]
-            rset = permissionRole.roleSettings()
-            for ir in range(len(rset)):
-                setting = rset[ir]
-                r = roles[ir].id
-                p = permissions[ip].id
-                if setting == 'Allow':
-                    self.failUnless(r == 'manager' and p == 'read')
-                elif setting == 'Deny':
-                    self.failUnless(r == 'member' and p == 'write')
-                else:
-                    self.failUnless(setting == 'Unset')
+
+        def check(allow=('manager', 'read'), deny=('member', 'write')):
+            permissionRoles = self.view.permissionRoles()
+            for ip, permissionRole in enumerate(permissionRoles):
+                rset = permissionRole.roleSettings()
+                for ir, setting in  enumerate(rset):
+                    r = roles[ir].id
+                    p = permissions[ip].id
+                    if setting == 'Allow':
+                        self.assertEqual(r, allow[0])
+                        self.assertEqual(p, allow[1])
+                    elif setting == 'Deny':
+                        self.assertEqual(r, deny[0])
+                        self.assertEqual(p, deny[1])
+                    else:
+                        self.assertEqual(setting, 'Unset')
+        check()
 
         #         manager  member
         # read       -
@@ -131,20 +132,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             }
         self.view.request = TestRequest(environ=env)
         self.view.update()
-        permissionRoles = self.view.permissionRoles()
-        for ip in range(len(permissionRoles)):
-            permissionRole = permissionRoles[ip]
-            rset = permissionRole.roleSettings()
-            for ir in range(len(rset)):
-                setting = rset[ir]
-                r = roles[ir].id
-                p = permissions[ip].id
-                if setting == 'Allow':
-                    self.failUnless(r == 'manager' and p == 'write')
-                elif setting == 'Deny':
-                    self.failUnless(r == 'manager' and p == 'read')
-                else:
-                    self.failUnless(setting == 'Unset')
+        check(('manager', 'write'), ('manager', 'read'))
 
     def testPermissionRoles(self):
         env={'permission_id': 'write',
@@ -153,8 +141,12 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.view.request = TestRequest(environ=env)
         self.view.update()
         permission = self.view.permissionForID('write')
+
+        self.assertEqual('write', permission.id)
+        self.assertEqual("Write", permission.title)
+        self.assertIsNone(permission.description)
         settings = permission.roleSettings()
-        self.assertEquals(settings, ['Allow', 'Unset'])
+        self.assertEqual(settings, ['Allow', 'Unset'])
 
 
         env={'permission_id': 'write',
@@ -164,7 +156,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.view.update()
         permission = self.view.permissionForID('write')
         settings = permission.roleSettings()
-        self.assertEquals(settings, ['Unset', 'Deny'])
+        self.assertEqual(settings, ['Unset', 'Deny'])
 
         env={'permission_id': 'write',
              'settings': ['Unset', 'foo'],
@@ -180,13 +172,16 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.view.request = TestRequest(environ=env)
         self.view.update(1)
         role = self.view.roleForID('member')
+        self.assertEqual('member', role.id)
+        self.assertEqual('Member', role.title)
+        self.assertIsNone(role.description)
         pinfos = role.permissionsInfo()
         for pinfo in pinfos:
             pid = pinfo['id']
             if pid == 'read':
-                self.assertEquals(pinfo['setting'], 'Allow')
+                self.assertEqual(pinfo['setting'], 'Allow')
             if pid == 'write':
-                self.assertEquals(pinfo['setting'], 'Deny')
+                self.assertEqual(pinfo['setting'], 'Deny')
 
         env={'Allow': [],
              'Deny': ['read'],
@@ -199,9 +194,9 @@ class Test(PlacefulSetup, unittest.TestCase):
         for pinfo in pinfos:
             pid = pinfo['id']
             if pid == 'read':
-                self.assertEquals(pinfo['setting'], 'Deny')
+                self.assertEqual(pinfo['setting'], 'Deny')
             if pid == 'write':
-                self.assertEquals(pinfo['setting'], 'Unset')
+                self.assertEqual(pinfo['setting'], 'Unset')
 
 
     def testRolePermissions_UserError(self):
@@ -214,8 +209,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
 
 def test_suite():
-    loader=unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
+    return unittest.defaultTestLoader.loadTestsFromName(__name__)
 
-if __name__=='__main__':
+if __name__ == '__main__':
     unittest.TextTestRunner().run(test_suite())
