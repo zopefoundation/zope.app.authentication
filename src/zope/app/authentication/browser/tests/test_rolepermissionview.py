@@ -14,7 +14,7 @@
 """Role-Permission View Tests
 
 """
-from __future__ import absolute_import
+
 import unittest
 
 import zope.interface

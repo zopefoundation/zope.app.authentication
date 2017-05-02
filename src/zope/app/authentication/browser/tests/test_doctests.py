@@ -178,8 +178,3 @@ def test_suite():
         issue663,
         doctest.DocFileSuite('../schemasearch.rst'),
         ))
-
-# XXX: Temporary workaround for zope.pluggableauth#7
-if str is not bytes:
-    import zope.pluggableauth.plugins.idpicker
-    zope.pluggableauth.plugins.idpicker.unicode = str
