@@ -2,7 +2,7 @@
 Changes
 =======
 
-4.0.0 (unreleased)
+4.0.0 (2017-05-02)
 ------------------
 
 - Drop test dependency on zope.app.zcmlfiles and zope.app.testing.
