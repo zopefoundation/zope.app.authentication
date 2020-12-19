@@ -12,4 +12,20 @@ with-docs = false
 with-sphinx-doctests = false
 
 [coverage]
-fail-under = 0
+fail-under = 97
+
+[flake8]
+additional-config = [
+    "# F401 imported but unused",
+    "per-file-ignores =",
+    "    src/zope/app/authentication/__init__.py: F401",
+    "    src/zope/app/authentication/ftpplugins.py: F401",
+    "    src/zope/app/authentication/generic.py: F401",
+    "    src/zope/app/authentication/groupfolder.py: F401",
+    "    src/zope/app/authentication/httpplugins.py: F401",
+    "    src/zope/app/authentication/idpicker.py: F401",
+    "    src/zope/app/authentication/interfaces.py: F401",
+    "    src/zope/app/authentication/password.py: F401",
+    "    src/zope/app/authentication/principalfolder.py: F401",
+    "    src/zope/app/authentication/session.py: F401",
+    ]
