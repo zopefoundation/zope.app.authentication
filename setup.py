@@ -16,16 +16,15 @@
 # When developing and releasing this package, please follow the documented
 # Zope Toolkit policies as described by this documentation.
 ##############################################################################
-"""Setup for zope.app.authentication package
-
-$Id$
-"""
+"""Setup for zope.app.authentication package."""
 import os
 from setuptools import setup, find_packages
+
 
 def read(*rnames):
     with open(os.path.join(os.path.dirname(__file__), *rnames)) as f:
         return f.read()
+
 
 tests_require = [
     'zope.app.security >= 4.0',
@@ -49,22 +48,22 @@ tests_require = [
 ]
 
 setup(name='zope.app.authentication',
-      version='4.0.1.dev0',
+      version='4.1.0.dev0',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description=('Principals and groups management for '
                    'the pluggable authentication utility'),
       long_description=(
-        read('README.rst')
-        + '\n\n.. contents::\n\n' +
-        read('src', 'zope', 'app', 'authentication', 'README.rst')
-        + '\n\n' +
-        read('src', 'zope', 'app', 'authentication', 'principalfolder.rst')
-        + '\n\n' +
-        read('src', 'zope', 'app', 'authentication', 'vocabulary.rst')
-        + '\n\n' +
-        read('CHANGES.rst')
-        ),
+          read('README.rst')
+          + '\n\n.. contents::\n\n' +
+          read('src', 'zope', 'app', 'authentication', 'README.rst')
+          + '\n\n' +
+          read('src', 'zope', 'app', 'authentication', 'principalfolder.rst')
+          + '\n\n' +
+          read('src', 'zope', 'app', 'authentication', 'vocabulary.rst')
+          + '\n\n' +
+          read('CHANGES.rst')
+      ),
       url='http://github.com/zopefoundation/zope.app.authentication',
       license='ZPL 2.1',
       classifiers=[
@@ -76,10 +75,11 @@ setup(name='zope.app.authentication',
           'Programming Language :: Python :: 2',
           'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
-          'Programming Language :: Python :: 3.3',
-          'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.7',
+          'Programming Language :: Python :: 3.8',
+          'Programming Language :: Python :: 3.9',
           'Programming Language :: Python :: Implementation',
           'Programming Language :: Python :: Implementation :: CPython',
           'Programming Language :: Python :: Implementation :: PyPy',
@@ -116,7 +116,7 @@ setup(name='zope.app.authentication',
           # Needed for browser code.
           'zope.app.container >= 4.0.0',
           'zope.app.component >= 4.0.0',
-          ],
+      ],
       include_package_data=True,
       zip_safe=False,
-)
+      )

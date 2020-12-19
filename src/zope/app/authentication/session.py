@@ -12,14 +12,10 @@
 #
 ##############################################################################
 """ Implementations of the session-based and cookie-based extractor and
-    challenge plugins.
+    challenge plugins."""
 
-$Id$
-"""
-__docformat__ = 'restructuredtext'
-
-### BBB
+# BBB
 from zope.pluggableauth.plugins.session import (
     ISessionCredentials, SessionCredentials,
     IBrowserFormChallenger, SessionCredentialsPlugin,
-    )
+)

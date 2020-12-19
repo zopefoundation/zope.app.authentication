@@ -18,6 +18,7 @@ from zope.app.authentication.i18n import ZopeMessageFactory as _
 from zope.app.component.browser.registration import AddUtilityRegistration
 from zope.authentication.interfaces import IAuthentication
 
+
 class AddAuthenticationRegistration(AddUtilityRegistration):
 
     label = _("Register a pluggable authentication utility")

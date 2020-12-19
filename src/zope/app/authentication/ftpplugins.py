@@ -11,9 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""PAS plugins related to FTP
-"""
-__docformat__ = 'restructuredtext'
+"""PAS plugins related to FTP."""
 
-### BBB
+# BBB
 from zope.pluggableauth.plugins.ftpplugins import FTPCredentialsPlugin

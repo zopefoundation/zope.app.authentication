@@ -20,6 +20,7 @@ from zope.securitypolicy.interfaces import IRolePermissionManager
 from zope.securitypolicy.interfaces import IRolePermissionMap
 from zope.securitypolicy.securitymap import SecurityMap
 
+
 @implementer(IRolePermissionManager, IRolePermissionMap)
 class RolePermissionManager(object):
     """

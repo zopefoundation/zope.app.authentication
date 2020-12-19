@@ -11,11 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Generic PAS Plugins
-
-$Id$
-"""
-__docformat__ = "reStructuredText"
+"""Generic PAS Plugins."""
 
 # BBB
 from zope.pluggableauth.plugins.generic import NoChallengeCredentialsPlugin

@@ -11,12 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""PAS plugins related to HTTP
+"""PAS plugins related to HTTP"""
 
-$Id$
-"""
-__docformat__ = "reStructuredText"
-
-### BBB
+# BBB
 from zope.pluggableauth.plugins.httpplugins import (
     IHTTPBasicAuthRealm, HTTPBasicAuthCredentialsPlugin)

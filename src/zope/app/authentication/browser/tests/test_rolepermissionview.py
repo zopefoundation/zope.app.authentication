@@ -31,11 +31,15 @@ from zope.component.testing import PlacelessSetup as PlacefulSetup
 from zope.securitypolicy.role import Role
 from zope.securitypolicy.interfaces import IRole
 
-from zope.app.authentication.browser.tests.rolepermissionmanager import RolePermissionManager
-from zope.app.authentication.browser.rolepermissionview import RolePermissionView
+from zope.app.authentication.browser.tests.rolepermissionmanager import (
+    RolePermissionManager)
+from zope.app.authentication.browser.rolepermissionview import (
+    RolePermissionView)
+
 
 class RolePermissionView(RolePermissionView, BrowserView):
     """Adding BrowserView to Utilities; this is usually done by ZCML."""
+
 
 @zope.interface.implementer(ITranslationDomain)
 class TranslationDomain(object):
@@ -52,15 +56,18 @@ def defineRole(id, title=None, description=None):
     ztapi.provideUtility(IRole, role, name=role.id)
     return role
 
+
 def definePermission(id, title=None, description=None):
     permission = Permission(id, title, description)
     ztapi.provideUtility(IPermission, permission, name=permission.id)
     return permission
 
+
 class FakeSiteManager(object):
 
     def __init__(self, site):
         self.__parent__ = site
+
 
 class Test(PlacefulSetup, unittest.TestCase):
 
@@ -99,7 +106,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             'p0r0': 'Allow',
             'p1r0': 'Unset', 'p1r1': 'Deny',
             'SUBMIT': 1
-            }
+        }
         self.view.request = TestRequest(environ=env)
         self.view.update()
 
@@ -107,7 +114,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             permissionRoles = self.view.permissionRoles()
             for ip, permissionRole in enumerate(permissionRoles):
                 rset = permissionRole.roleSettings()
-                for ir, setting in  enumerate(rset):
+                for ir, setting in enumerate(rset):
                     r = roles[ir].id
                     p = permissions[ip].id
                     if setting == 'Allow':
@@ -129,15 +136,15 @@ class Test(PlacefulSetup, unittest.TestCase):
             'p0r0': 'Deny',
             'p1r0': 'Allow', 'p1r1': 'Unset',
             'SUBMIT': 1
-            }
+        }
         self.view.request = TestRequest(environ=env)
         self.view.update()
         check(('manager', 'write'), ('manager', 'read'))
 
     def testPermissionRoles(self):
-        env={'permission_id': 'write',
-             'settings': ['Allow', 'Unset'],
-             'SUBMIT_PERMS': 1}
+        env = {'permission_id': 'write',
+               'settings': ['Allow', 'Unset'],
+               'SUBMIT_PERMS': 1}
         self.view.request = TestRequest(environ=env)
         self.view.update()
         permission = self.view.permissionForID('write')
@@ -148,27 +155,26 @@ class Test(PlacefulSetup, unittest.TestCase):
         settings = permission.roleSettings()
         self.assertEqual(settings, ['Allow', 'Unset'])
 
-
-        env={'permission_id': 'write',
-             'settings': ['Unset', 'Deny'],
-             'SUBMIT_PERMS': 1}
+        env = {'permission_id': 'write',
+               'settings': ['Unset', 'Deny'],
+               'SUBMIT_PERMS': 1}
         self.view.request = TestRequest(environ=env)
         self.view.update()
         permission = self.view.permissionForID('write')
         settings = permission.roleSettings()
         self.assertEqual(settings, ['Unset', 'Deny'])
 
-        env={'permission_id': 'write',
-             'settings': ['Unset', 'foo'],
-             'SUBMIT_PERMS': 1}
+        env = {'permission_id': 'write',
+               'settings': ['Unset', 'foo'],
+               'SUBMIT_PERMS': 1}
         self.view.request = TestRequest(environ=env)
         self.assertRaises(ValueError, self.view.update)
 
     def testRolePermissions(self):
-        env={'Allow': ['read'],
-             'Deny': ['write'],
-             'SUBMIT_ROLE': 1,
-             'role_id': 'member'}
+        env = {'Allow': ['read'],
+               'Deny': ['write'],
+               'SUBMIT_ROLE': 1,
+               'role_id': 'member'}
         self.view.request = TestRequest(environ=env)
         self.view.update(1)
         role = self.view.roleForID('member')
@@ -183,10 +189,10 @@ class Test(PlacefulSetup, unittest.TestCase):
             if pid == 'write':
                 self.assertEqual(pinfo['setting'], 'Deny')
 
-        env={'Allow': [],
-             'Deny': ['read'],
-             'SUBMIT_ROLE': 1,
-             'role_id': 'member'}
+        env = {'Allow': [],
+               'Deny': ['read'],
+               'SUBMIT_ROLE': 1,
+               'role_id': 'member'}
         self.view.request = TestRequest(environ=env)
         self.view.update()
         role = self.view.roleForID('member')
@@ -198,18 +204,18 @@ class Test(PlacefulSetup, unittest.TestCase):
             if pid == 'write':
                 self.assertEqual(pinfo['setting'], 'Unset')
 
-
     def testRolePermissions_UserError(self):
-        env={'Allow': ['read'],
-             'Deny': ['read'],
-             'SUBMIT_ROLE': 1,
-             'role_id': 'member'}
+        env = {'Allow': ['read'],
+               'Deny': ['read'],
+               'SUBMIT_ROLE': 1,
+               'role_id': 'member'}
         self.view.request = TestRequest(environ=env)
         self.assertRaises(UserError, self.view.update, 1)
 
 
 def test_suite():
     return unittest.defaultTestLoader.loadTestsFromName(__name__)
+
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(test_suite())

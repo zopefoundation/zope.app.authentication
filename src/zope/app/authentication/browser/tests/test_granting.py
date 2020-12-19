@@ -15,7 +15,7 @@
 
 from zope.component import testing
 import doctest
-import unittest
+
 
 def test_suite():
     return doctest.DocFileSuite('../granting.rst',

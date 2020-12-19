@@ -19,18 +19,19 @@ from zope import component
 from zope.location.interfaces import ILocation
 from zope.app.authentication import interfaces
 
-### BBB using zope.pluggableauth
-from zope.pluggableauth import PluggableAuthentication
+# BBB using zope.pluggableauth
+from zope.pluggableauth import PluggableAuthentication  # noqa: F401 BBB
 from zope.pluggableauth.interfaces import (
     IQueriableAuthenticator, IPluggableAuthentication)
 
+
 @component.adapter(
-        interfaces.IQuerySchemaSearch,
-        IPluggableAuthentication)
+    interfaces.IQuerySchemaSearch,
+    IPluggableAuthentication)
 @zope.interface.implementer(
-        ILocation,
-        IQueriableAuthenticator,
-        interfaces.IQuerySchemaSearch)
+    ILocation,
+    IQueriableAuthenticator,
+    interfaces.IQuerySchemaSearch)
 class QuerySchemaSearchAdapter(object):
     """Performs schema-based principal searches on behalf of a PAU.
 
@@ -38,9 +39,10 @@ class QuerySchemaSearchAdapter(object):
     IQuerySchemaSearch) and prepends the PAU prefix to the resulting principal
     IDs.
     """
+
     def __init__(self, authplugin, pau):
         if (ILocation.providedBy(authplugin) and
-            authplugin.__parent__ is not None):
+                authplugin.__parent__ is not None):
             # Checking explicitly for the parent, because providing ILocation
             # basically means that the object *could* be located. It doesn't
             # say the object must be located.

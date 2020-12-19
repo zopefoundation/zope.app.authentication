@@ -31,6 +31,7 @@ search_label = _('search-button', 'Search')
 source_label = _(u"Source path")
 source_title = _(u"Path to the source utility")
 
+
 @implementer(ISourceQueryView)
 class QuerySchemaSearchView(object):
 
@@ -82,7 +83,7 @@ class QuerySchemaSearchView(object):
             html.append('  <div class="field">')
             html.append('    %s' % widget())
 
-            if widget.error(): # pragma: no cover
+            if widget.error():  # pragma: no cover
                 html.append('    <div class="error">')
                 html.append('      %s' % widget.error())
                 html.append('    </div>')
@@ -94,7 +95,7 @@ class QuerySchemaSearchView(object):
         html.append('<div class="row">')
         html.append('  <div class="field">')
         html.append('    <input type="submit" name="%s" value="%s" />'
-                     % (name+'.search',
+                    % (name+'.search',
                         translate(search_label, context=self.request)))
         html.append('  </div>')
         html.append('</div>')
@@ -116,11 +117,11 @@ class QuerySchemaSearchView(object):
                 if widget.hasInput():
                     try:
                         data[widget_name] = widget.getInputValue()
-                    except InputErrors as error: # pragma: no cover
+                    except InputErrors as error:  # pragma: no cover
                         errors.append(error)
-                elif field.required: # pragma: no cover
+                elif field.required:  # pragma: no cover
                     errors.append(MissingInputError(
                         widget_name, widget.label, 'the field is required'))
-        if errors: # pragma: no cover
+        if errors:  # pragma: no cover
             raise WidgetsError(errors, widgetsData=data)
         return self.context.search(data)

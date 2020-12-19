@@ -26,6 +26,7 @@ from zope.security.interfaces import IPermission
 from zope.securitypolicy.interfaces import Unset, Allow, Deny
 from zope.securitypolicy.interfaces import IRole, IRolePermissionManager
 
+
 class RolePermissionView(object):
 
     _pagetip = _("""For each permission you want to grant (or deny) to a role,
@@ -92,21 +93,22 @@ class RolePermissionView(object):
         role = getUtility(IRole, rid)
         return RolePermissions(role, self.context.__parent__, permissions)
 
-
     def update(self, testing=None):
         status = ''
         changed = False
 
         if 'SUBMIT' in self.request:
-            roles       = [r.id for r in self.roles()]
+            roles = [r.id for r in self.roles()]
             permissions = [p.id for p in self.permissions()]
-            prm         = IRolePermissionManager(self.context.__parent__)
+            prm = IRolePermissionManager(self.context.__parent__)
             for ip in range(len(permissions)):
                 rperm = self.request.get("p%s" % ip)
-                if rperm not in permissions: continue
+                if rperm not in permissions:
+                    continue
                 for ir in range(len(roles)):
                     rrole = self.request.get("r%s" % ir)
-                    if rrole not in roles: continue
+                    if rrole not in roles:
+                        continue
                     setting = self.request.get("p%sr%s" % (ip, ir), None)
                     if setting is not None:
                         if setting == Unset.getName():
@@ -116,7 +118,8 @@ class RolePermissionView(object):
                         elif setting == Deny.getName():
                             prm.denyPermissionToRole(rperm, rrole)
                         else:
-                            raise ValueError("Incorrect setting: %s" % setting) # pragma: no cover
+                            raise ValueError("Incorrect setting: %s" %
+                                             setting)  # pragma: no cover
             changed = True
 
         if 'SUBMIT_PERMS' in self.request:
@@ -149,7 +152,7 @@ class RolePermissionView(object):
                         permission.title, context=self.request)
                     msg = _('You choose both allow and deny for permission'
                             ' "${permission}". This is not allowed.',
-                            mapping = {'permission': permission_translated})
+                            mapping={'permission': permission_translated})
                     raise UserError(msg)
                 if rperm in allowed:
                     prm.grantPermissionToRole(rperm, role_id)
@@ -200,6 +203,7 @@ class PermissionRoles(object):
             settings[role] = setting.getName()
         nosetting = Unset.getName()
         return [settings.get(role.id, nosetting) for role in self._roles]
+
 
 @implementer(IRole)
 class RolePermissions(object):

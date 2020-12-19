@@ -20,6 +20,7 @@ import zope.app.container.browser.adding
 
 from zope.traversing.browser.absoluteurl import absoluteURL
 
+
 class Adding(zope.app.container.browser.adding.Adding):
 
     def nextURL(self):
