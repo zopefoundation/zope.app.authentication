@@ -13,8 +13,6 @@
 ##############################################################################
 """Pluggable Authentication Service Tests
 """
-__docformat__ = "reStructuredText"
-
 import doctest
 import unittest
 import re
@@ -31,7 +29,7 @@ from zope.component.eventtesting import getEvents, clearEvents
 from zope.component.hooks import setSite
 from zope.component.hooks import setHooks
 from zope.component.hooks import resetHooks
-from zope.component.interfaces import IComponentLookup
+from zope.interface.interfaces import IComponentLookup
 from zope.component.interfaces import ISite
 from zope.component.testing import tearDown
 
