@@ -113,7 +113,7 @@ class GrantWidget(RadioWidget):
         # check if we want to select first item, the previously selected item
         # or the "no value" item.
         if (value == self.context.missing_value
-            and getattr(self, 'firstItem', False)
+                and getattr(self, 'firstItem', False)
                 and len(self.vocabulary) > 0):
             if self.context.required:
                 # Grab the first item from the iterator:

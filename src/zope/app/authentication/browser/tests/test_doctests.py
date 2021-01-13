@@ -73,7 +73,6 @@ class FunkTest(unittest.TestCase):
 
         transaction.commit()
         self.assertEqual(len(pf.keys()), 1)
-        # raise str([x for x in pf.keys()])
 
         response = self.publish('/pf/@@contents.html',
                                 basic='mgr:mgrpw',
@@ -109,7 +108,6 @@ class FunkTest(unittest.TestCase):
 
         transaction.commit()
         self.assertEqual(len(pf.keys()), 1)
-        # raise str([x for x in pf.keys()])
 
         response = self.publish('/pf/@@contents.html',
                                 basic='mgr:mgrpw',

@@ -118,8 +118,8 @@ class RolePermissionView(object):
                         elif setting == Deny.getName():
                             prm.denyPermissionToRole(rperm, rrole)
                         else:
-                            raise ValueError("Incorrect setting: %s" %
-                                             setting)  # pragma: no cover
+                            raise ValueError("Incorrect setting: %s"
+                                             % setting)  # pragma: no cover
             changed = True
 
         if 'SUBMIT_PERMS' in self.request:

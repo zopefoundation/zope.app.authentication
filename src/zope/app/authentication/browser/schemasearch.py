@@ -95,8 +95,8 @@ class QuerySchemaSearchView(object):
         html.append('<div class="row">')
         html.append('  <div class="field">')
         html.append('    <input type="submit" name="%s" value="%s" />'
-                    % (name+'.search',
-                        translate(search_label, context=self.request)))
+                    % (name + '.search',
+                       translate(search_label, context=self.request)))
         html.append('  </div>')
         html.append('</div>')
 
