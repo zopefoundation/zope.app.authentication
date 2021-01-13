@@ -770,8 +770,8 @@ plugin::
   ...
   ...     __parent__ = __name__ = None
   ...
-  >>> import zope.site.hooks
-  >>> site = zope.site.hooks.getSite()
+  >>> import zope.component.hooks
+  >>> site = zope.component.hooks.getSite()
   >>> plugin = LocatedQueriableAuthenticatorPlugin()
   >>> plugin.__parent__ = site
   >>> plugin.__name__ = 'localname'

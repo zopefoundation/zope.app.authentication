@@ -11,11 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pluggable Authentication Utility Interfaces
-
-$Id$
-"""
-__docformat__ = "reStructuredText"
+"""Pluggable Authentication Utility Interfaces"""
 
 import zope.interface
 import zope.schema
@@ -46,9 +42,9 @@ from zope.pluggableauth.interfaces import (
     IPrincipalsRemovedFromGroup,
     IQueriableAuthenticator,
     IQuerySchemaSearch,
-    )
+)
 
 # BBB: using zope.pluggableauth
 from zope.pluggableauth.plugins.groupfolder import (
     GroupAdded,
-    )
+)

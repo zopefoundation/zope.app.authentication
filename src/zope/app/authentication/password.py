@@ -11,11 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Backward compatibility imports for password managers
-
-$Id$
-"""
-__docformat__ = 'restructuredtext'
+"""Backward compatibility imports for password managers."""
 
 # BBB: the password managers were moved into zope.password package.
 from zope.password.password import (
@@ -24,5 +20,5 @@ from zope.password.password import (
     SHA1PasswordManager,
     SSHAPasswordManager,
     managers,
-    )
+)
 from zope.password.vocabulary import PasswordManagerNamesVocabulary

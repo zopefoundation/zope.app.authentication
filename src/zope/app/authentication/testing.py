@@ -14,19 +14,17 @@
 """zope.app.authentication common test related classes/functions/objects.
 
 """
-
-__docformat__ = "reStructuredText"
-
-
 import zope.component
 import zope.interface
 from zope.testbrowser.wsgi import TestBrowserLayer
 from zope.app.wsgi.testlayer import BrowserLayer
 import zope.app.authentication
 
+
 class _AppAuthenticationBrowserLayer(TestBrowserLayer,
                                      BrowserLayer):
     pass
 
-AppAuthenticationLayer = _AppAuthenticationBrowserLayer(zope.app.authentication,
-                                                        allowTearDown=True)
+
+AppAuthenticationLayer = _AppAuthenticationBrowserLayer(
+    zope.app.authentication, allowTearDown=True)

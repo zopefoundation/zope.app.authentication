@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Zope Groups Folder implementation
+"""Zope Groups Folder implementation."""
 
-$Id$
-
-"""
 # BBB using zope.pluggableauth.plugin.groupfolder
 from zope.pluggableauth.plugins.groupfolder import (
     GroupCycle,
@@ -33,4 +30,4 @@ from zope.pluggableauth.plugins.groupfolder import (
     setGroupsForPrincipal,
     setMemberSubscriber,
     specialGroups,
-    )
+)

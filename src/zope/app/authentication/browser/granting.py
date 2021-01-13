@@ -62,7 +62,7 @@ class GrantWidget(RadioWidget):
     _tdTemplate = (
         u'\n<td class="%s">\n<center>\n<label for="%s" title="%s">\n'
         u'%s\n</label>\n</center>\n</td>\n'
-        )
+    )
 
     def __call__(self):
         """See IBrowserWidget."""
@@ -87,7 +87,7 @@ class GrantWidget(RadioWidget):
                              id=id,
                              cssClass=cssClass,
                              type='radio',
-                             extra = 'onclick="changeMatrix(this);"')
+                             extra='onclick="changeMatrix(this);"')
         return self._tdTemplate % (tdClass, id, text, elem)
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
@@ -106,15 +106,15 @@ class GrantWidget(RadioWidget):
                              cssClass=cssClass,
                              checked="checked",
                              type='radio',
-                             extra = 'onclick="changeMatrix(this);"')
+                             extra='onclick="changeMatrix(this);"')
         return self._tdTemplate % (tdClass, id, text, elem)
 
     def renderItems(self, value):
         # check if we want to select first item, the previously selected item
         # or the "no value" item.
         if (value == self.context.missing_value
-            and getattr(self, 'firstItem', False)
-            and len(self.vocabulary) > 0):
+                and getattr(self, 'firstItem', False)
+                and len(self.vocabulary) > 0):
             if self.context.required:
                 # Grab the first item from the iterator:
                 values = [next(iter(self.vocabulary)).value]
@@ -131,13 +131,12 @@ class GrantWidget(RadioWidget):
         return " ".join(rendered_items)
 
 
-
 class Granting(object):
 
     principal = None
 
     principal_field = zope.schema.Choice(
-        __name__ = 'principal',
+        __name__='principal',
         source=PrincipalSource(),
         required=True)
 
@@ -162,7 +161,8 @@ class Granting(object):
         # Make sure we can use the principal id in a form by base64ing it
         principal_str = text_type(principal)
         principal_bytes = principal_str.encode('utf-8')
-        principal_token = base64.b64encode(principal_bytes).strip().replace(b'=', b'_')
+        principal_token = base64.b64encode(
+            principal_bytes).strip().replace(b'=', b'_')
         if not isinstance(principal_token, str):
             principal_token = principal_token.decode('utf-8')
 
@@ -173,7 +173,7 @@ class Granting(object):
         self.roles = []
         for role in roles:
             name = principal_token + '.role.' + role.id
-            field = zope.schema.Choice(__name__= name,
+            field = zope.schema.Choice(__name__=name,
                                        title=role.title,
                                        vocabulary=settings_vocabulary)
             setUpWidget(self, name, field, IInputWidget,
@@ -206,7 +206,7 @@ class Granting(object):
             if role_widget.hasInput():
                 try:
                     setting = role_widget.getInputValue()
-                except MissingInputError: # pragma: no cover
+                except MissingInputError:  # pragma: no cover
                     pass
                 else:
                     # Arrgh!
@@ -228,7 +228,7 @@ class Granting(object):
             if perm_widget.hasInput():
                 try:
                     setting = perm_widget.getInputValue()
-                except MissingInputError: # pragma: no cover
+                except MissingInputError:  # pragma: no cover
                     pass
                 else:
                     # Arrgh!

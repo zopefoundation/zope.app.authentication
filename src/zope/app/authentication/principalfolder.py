@@ -11,11 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZODB-based Authentication Source
-
-$Id$
-"""
-__docformat__ = "reStructuredText"
+"""ZODB-based Authentication Source"""
 
 # BBB using zope.pluggableauth
 from zope.pluggableauth.interfaces import IAuthenticatorPlugin
@@ -24,7 +20,7 @@ from zope.pluggableauth.factories import (
     FoundPrincipalFactory,
     Principal,
     PrincipalInfo,
-    )
+)
 # BBB using zope.pluggableauth.plugins.principalfolder
 from zope.pluggableauth.plugins.principalfolder import (
     IInternalPrincipal,
@@ -33,4 +29,4 @@ from zope.pluggableauth.plugins.principalfolder import (
     InternalPrincipal,
     ISearchSchema,
     PrincipalFolder,
-    )
+)

@@ -16,6 +16,7 @@
 """
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
 
+
 class LoginForm(object):
     """Mix-in class to implement login form logic"""
 
@@ -43,4 +44,4 @@ class LoginForm(object):
             request.response.redirect(camefrom or '.')
             return ''
 
-        return self.index() # call template
+        return self.index()  # call template

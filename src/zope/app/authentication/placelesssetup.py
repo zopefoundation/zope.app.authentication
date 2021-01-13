@@ -20,6 +20,7 @@ __docformat__ = "reStructuredText"
 # BBB: the password managers were moved to zope.password package
 from zope.password.testing import setUpPasswordManagers
 
+
 class PlacelessSetup(object):
 
     def setUp(self):

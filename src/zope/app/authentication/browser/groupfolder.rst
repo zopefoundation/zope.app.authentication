@@ -33,7 +33,7 @@ First, We need to create and register a pluggable authentication utility.
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
   ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication
   ... """))
-  HTTP/1.1 200 OK
+  HTTP/1.1 200 Ok
   ...
 
 Register PAU.
@@ -458,7 +458,7 @@ Next we'll select the credentials and authenticators for the PAU:
   ... Z3JvdXBz
   ... -----------------------------2026736768606413562109112352--
   ... """))
-  HTTP/1.1 200 OK
+  HTTP/1.1 200 Ok
   ...
 
 
@@ -545,7 +545,7 @@ That includes Betty, Mary and Mike:
   ...
   ... -----------------------------6981402699601872602121555350--
   ... """))
-  HTTP/1.1 200 OK
+  HTTP/1.1 200 Ok
   ...
 
 
@@ -627,14 +627,14 @@ with Bill and Betty as members:
   ... Change
   ... -----------------------------181944013812647128322134918391--
   ... """))
-  HTTP/1.1 200 OK
+  HTTP/1.1 200 Ok
   ...
 
 Now, with these groups set up, we should see these groups on the
 affected principals.  First, we'll make the root folder the
 thread-local site:
 
-  >>> from zope.site.hooks import setSite
+  >>> from zope.component.hooks import setSite
   >>> setSite(getRootFolder())
 
 and we'll get the pluggable authentication utility:

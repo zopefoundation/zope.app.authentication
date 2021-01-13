@@ -34,6 +34,7 @@ from zope.app.wsgi.testlayer import http
 
 from webtest import TestApp
 
+
 class FunkTest(unittest.TestCase):
 
     layer = AppAuthenticationLayer
@@ -41,7 +42,6 @@ class FunkTest(unittest.TestCase):
     def setUp(self):
         super(FunkTest, self).setUp()
         self._testapp = TestApp(self.layer.make_wsgi_app())
-
 
     def publish(self, path, basic=None, form=None, headers=None):
         assert basic
@@ -73,14 +73,12 @@ class FunkTest(unittest.TestCase):
 
         transaction.commit()
         self.assertEqual(len(pf.keys()), 1)
-        #raise str([x for x in pf.keys()])
 
         response = self.publish('/pf/@@contents.html',
                                 basic='mgr:mgrpw',
                                 form={'ids:list': [u'p1'],
                                       'container_copy_button': u'Copy'})
         self.assertEqual(response.status_int, 302)
-
 
         # Try to paste the file
         with self.assertRaises(UserError) as r:
@@ -110,14 +108,12 @@ class FunkTest(unittest.TestCase):
 
         transaction.commit()
         self.assertEqual(len(pf.keys()), 1)
-        #raise str([x for x in pf.keys()])
 
         response = self.publish('/pf/@@contents.html',
                                 basic='mgr:mgrpw',
                                 form={'ids:list': [u'p1'],
                                       'container_cut_button': u'Cut'})
         self.assertEqual(response.status_int, 302)
-
 
         # Try to paste the file
         with self.assertRaises(UserError) as r:
@@ -138,6 +134,7 @@ checker = renormalizing.RENormalizing([
     (re.compile(r"u'([^']*)'"), r"'\1'"),
 ])
 
+
 def test_suite():
     flags = (doctest.NORMALIZE_WHITESPACE
              | renormalizing.IGNORE_EXCEPTION_MODULE_IN_PYTHON2
@@ -157,14 +154,18 @@ def test_suite():
             path,
             checker=checker,
             optionflags=flags,
-            globs={'http': _http, 'getRootFolder': AppAuthenticationLayer.getRootFolder})
+            globs={
+                'http': _http,
+                'getRootFolder': AppAuthenticationLayer.getRootFolder
+            })
         test.layer = AppAuthenticationLayer
         return test
 
     principalfolder = make_doctest('../principalfolder.rst')
     groupfolder = make_doctest('../groupfolder.rst')
     pau_prefix_and_searching = make_doctest('../pau_prefix_and_searching.rst')
-    group_searching_with_empty_string = make_doctest('../group_searching_with_empty_string.rst')
+    group_searching_with_empty_string = make_doctest(
+        '../group_searching_with_empty_string.rst')
     special_groups = make_doctest('../special-groups.rst')
     issue663 = make_doctest('../issue663.rst')
 
@@ -177,4 +178,4 @@ def test_suite():
         unittest.makeSuite(FunkTest),
         issue663,
         doctest.DocFileSuite('../schemasearch.rst'),
-        ))
+    ))

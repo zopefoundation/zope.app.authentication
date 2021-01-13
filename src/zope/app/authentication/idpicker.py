@@ -12,11 +12,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Helper base class that picks principal ids
-
-$Id$
-"""
-__docformat__ = 'restructuredtext'
+"""Helper base class that picks principal ids."""
 
 # BBB using zope.pluggableauth.plugins.idpicker
 from zope.pluggableauth.plugins.idpicker import IdPicker

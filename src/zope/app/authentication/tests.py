@@ -13,8 +13,6 @@
 ##############################################################################
 """Pluggable Authentication Service Tests
 """
-__docformat__ = "reStructuredText"
-
 import doctest
 import unittest
 import re
@@ -31,7 +29,7 @@ from zope.component.eventtesting import getEvents, clearEvents
 from zope.component.hooks import setSite
 from zope.component.hooks import setHooks
 from zope.component.hooks import resetHooks
-from zope.component.interfaces import IComponentLookup
+from zope.interface.interfaces import IComponentLookup
 from zope.component.interfaces import ISite
 from zope.component.testing import tearDown
 
@@ -51,8 +49,13 @@ from zope.publisher.interfaces import IRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from zope.session.http import CookieClientIdManager
-from zope.session.interfaces import IClientId, IClientIdManager, ISession, ISessionDataContainer
-from zope.session.session import ClientId, Session, PersistentSessionDataContainer
+from zope.session.interfaces import IClientId
+from zope.session.interfaces import IClientIdManager
+from zope.session.interfaces import ISession
+from zope.session.interfaces import ISessionDataContainer
+from zope.session.session import ClientId
+from zope.session.session import PersistentSessionDataContainer
+from zope.session.session import Session
 
 from zope.site.folder import rootFolder
 from zope.site.site import LocalSiteManager
@@ -72,13 +75,16 @@ def setUpTraversal():
                              (ISimpleReadContainer,),
                              ITraversable)
 
+
 def setUpAnnotations():
     component.provideAdapter(AttributeAnnotations)
+
 
 def setUpSiteManagerLookup():
     component.provideAdapter(SiteManagerAdapter,
                              (Interface,),
                              IComponentLookup)
+
 
 def createSiteManager(folder, setsite=False):
     if not ISite.providedBy(folder):
@@ -99,6 +105,7 @@ class PlacelessSetup(EventPlacelessSetup,
 
 setUp = PlacelessSetup().setUp
 
+
 def placefulSetUp(site=False):
     PlacelessSetup().setUp()
     setHooks()
@@ -109,16 +116,20 @@ def placefulSetUp(site=False):
         createSiteManager(site, setsite=True)
         return site
 
+
 def placefulTearDown():
     PlacelessSetup().tearDown()
     resetHooks()
     setSite()
 
+
 def siteSetUp(test):
     placefulSetUp(site=True)
 
+
 def siteTearDown(test):
     placefulTearDown()
+
 
 def nonHTTPSessionTestCaseSetUp(sdc_class=PersistentSessionDataContainer):
     # I am getting an error with ClientId and not TestClientId
@@ -142,7 +153,8 @@ class NonHTTPSessionTestCase(unittest.TestCase):
     def test_exeractCredentials(self):
         plugin = SessionCredentialsPlugin()
 
-        self.assertEqual(plugin.extractCredentials(base.TestRequest('/')), None)
+        self.assertEqual(plugin.extractCredentials(
+            base.TestRequest('/')), None)
 
     def test_challenge(self):
         plugin = SessionCredentialsPlugin()
@@ -154,12 +166,12 @@ class NonHTTPSessionTestCase(unittest.TestCase):
 
         self.assertEqual(plugin.logout(base.TestRequest('/')), False)
 
+
 class TestPlacesssetup(unittest.TestCase):
 
     def test_runs(self):
         from zope.app.authentication import placelesssetup
         placelesssetup.PlacelessSetup().setUp()
-
 
 
 @implementer(IBrowserPublisher)
@@ -182,7 +194,7 @@ class ManagementViewSelector(BrowserView):
         if not redirect_url.lower().startswith(('../', 'javascript:', '++')):
             self.request.response.redirect(redirect_url)
             return u''
-        raise AssertionError("Should not get here") # pragma: no cover
+        raise AssertionError("Should not get here")  # pragma: no cover
 
 
 class Unauthorized(BrowserPage):
@@ -196,8 +208,10 @@ class Unauthorized(BrowserPage):
         self.request.response.setStatus(403)
 
         # make sure that squid does not keep the response in the cache
-        self.request.response.setHeader('Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
-        self.request.response.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+        self.request.response.setHeader(
+            'Expires', 'Mon, 26 Jul 1997 05:00:00 GMT')
+        self.request.response.setHeader(
+            'Cache-Control', 'no-store, no-cache, must-revalidate')
         self.request.response.setHeader('Pragma', 'no-cache')
 
         principal = self.request.principal
@@ -205,6 +219,7 @@ class Unauthorized(BrowserPage):
         auth.unauthorized(principal.id, self.request)
         if self.request.response.getStatus() not in (302, 303):
             return self.template()
+
 
 checker = renormalizing.RENormalizing([
     (re.compile("u('[^']*?')"), r"\1"),
@@ -264,6 +279,7 @@ def test_suite():
                              ),
         unittest.defaultTestLoader.loadTestsFromName(__name__)
     ))
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
