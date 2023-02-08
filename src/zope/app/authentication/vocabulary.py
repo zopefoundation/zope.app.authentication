@@ -21,12 +21,14 @@ __docformat__ = "reStructuredText"
 import base64
 
 import zope.dublincore.interfaces
-from zope import interface, component, i18n
+from zope.pluggableauth import interfaces
 from zope.schema import vocabulary
 from zope.schema.interfaces import IVocabularyFactory
 
+from zope import component
+from zope import i18n
+from zope import interface
 from zope.app.authentication.i18n import ZopeMessageFactory as _
-from zope.pluggableauth import interfaces
 
 
 UTILITY_TITLE = _(

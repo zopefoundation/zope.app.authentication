@@ -16,15 +16,18 @@
 """
 from datetime import datetime
 
-from zope.component import getUtilitiesFor, getUtility
-from zope.i18n import translate
-from zope.interface import implementer
+from zope.component import getUtilitiesFor
+from zope.component import getUtility
 from zope.exceptions.interfaces import UserError
+from zope.i18n import translate
 from zope.i18nmessageid import ZopeMessageFactory as _
-
+from zope.interface import implementer
 from zope.security.interfaces import IPermission
-from zope.securitypolicy.interfaces import Unset, Allow, Deny
-from zope.securitypolicy.interfaces import IRole, IRolePermissionManager
+from zope.securitypolicy.interfaces import Allow
+from zope.securitypolicy.interfaces import Deny
+from zope.securitypolicy.interfaces import IRole
+from zope.securitypolicy.interfaces import IRolePermissionManager
+from zope.securitypolicy.interfaces import Unset
 
 
 class RolePermissionView(object):

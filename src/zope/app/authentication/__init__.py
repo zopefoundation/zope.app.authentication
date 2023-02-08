@@ -14,5 +14,6 @@
 """Pluggable Authentication Utility
 """
 
-from zope.app.authentication import interfaces
 from zope.pluggableauth.authentication import PluggableAuthentication
+
+from zope.app.authentication import interfaces

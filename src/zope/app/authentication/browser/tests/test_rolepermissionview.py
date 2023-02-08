@@ -18,23 +18,22 @@
 import unittest
 
 import zope.interface
+from zope.component.testing import PlacelessSetup as PlacefulSetup
+from zope.exceptions.interfaces import UserError
 from zope.i18n.interfaces import ITranslationDomain
 from zope.i18nmessageid import Message
-from zope.publisher.browser import TestRequest, BrowserView
-from zope.exceptions.interfaces import UserError
-from zope.security.permission import Permission
+from zope.publisher.browser import BrowserView
+from zope.publisher.browser import TestRequest
 from zope.security.interfaces import IPermission
+from zope.security.permission import Permission
+from zope.securitypolicy.interfaces import IRole
+from zope.securitypolicy.role import Role
 
 from zope.app.authentication.browser import tests as ztapi
-from zope.component.testing import PlacelessSetup as PlacefulSetup
-
-from zope.securitypolicy.role import Role
-from zope.securitypolicy.interfaces import IRole
-
-from zope.app.authentication.browser.tests.rolepermissionmanager import (
-    RolePermissionManager)
-from zope.app.authentication.browser.rolepermissionview import (
-    RolePermissionView)
+from zope.app.authentication.browser.rolepermissionview import \
+    RolePermissionView
+from zope.app.authentication.browser.tests.rolepermissionmanager import \
+    RolePermissionManager
 
 
 class RolePermissionView(RolePermissionView, BrowserView):

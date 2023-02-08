@@ -13,20 +13,18 @@
 ##############################################################################
 """ZODB-based Authentication Source"""
 
+from zope.pluggableauth.factories import AuthenticatedPrincipalFactory
+from zope.pluggableauth.factories import FoundPrincipalFactory
+from zope.pluggableauth.factories import Principal
+from zope.pluggableauth.factories import PrincipalInfo
 # BBB using zope.pluggableauth
 from zope.pluggableauth.interfaces import IAuthenticatorPlugin
-from zope.pluggableauth.factories import (
-    AuthenticatedPrincipalFactory,
-    FoundPrincipalFactory,
-    Principal,
-    PrincipalInfo,
-)
 # BBB using zope.pluggableauth.plugins.principalfolder
-from zope.pluggableauth.plugins.principalfolder import (
-    IInternalPrincipal,
-    IInternalPrincipalContained,
-    IInternalPrincipalContainer,
-    InternalPrincipal,
-    ISearchSchema,
-    PrincipalFolder,
-)
+from zope.pluggableauth.plugins.principalfolder import IInternalPrincipal
+from zope.pluggableauth.plugins.principalfolder import \
+    IInternalPrincipalContained
+from zope.pluggableauth.plugins.principalfolder import \
+    IInternalPrincipalContainer
+from zope.pluggableauth.plugins.principalfolder import InternalPrincipal
+from zope.pluggableauth.plugins.principalfolder import ISearchSchema
+from zope.pluggableauth.plugins.principalfolder import PrincipalFolder

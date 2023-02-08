@@ -17,22 +17,21 @@
 
 __docformat__ = "reStructuredText"
 
+import doctest
 import re
 import unittest
-import doctest
-from zope.testing import renormalizing
 
 import transaction
-from zope.interface import directlyProvides
-from zope.exceptions.interfaces import UserError
-
-from zope.pluggableauth.factories import Principal
-from zope.app.authentication.principalfolder import PrincipalFolder
-from zope.app.authentication.principalfolder import IInternalPrincipal
-from zope.app.authentication.testing import AppAuthenticationLayer
-from zope.app.wsgi.testlayer import http
-
 from webtest import TestApp
+from zope.app.wsgi.testlayer import http
+from zope.exceptions.interfaces import UserError
+from zope.interface import directlyProvides
+from zope.pluggableauth.factories import Principal
+from zope.testing import renormalizing
+
+from zope.app.authentication.principalfolder import IInternalPrincipal
+from zope.app.authentication.principalfolder import PrincipalFolder
+from zope.app.authentication.testing import AppAuthenticationLayer
 
 
 class FunkTest(unittest.TestCase):
@@ -136,9 +135,7 @@ checker = renormalizing.RENormalizing([
 
 
 def test_suite():
-    flags = (doctest.NORMALIZE_WHITESPACE
-             | renormalizing.IGNORE_EXCEPTION_MODULE_IN_PYTHON2
-             | doctest.ELLIPSIS)
+    flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
 
     def _http(query_str, *args, **kwargs):
         wsgi_app = AppAuthenticationLayer.make_wsgi_app()

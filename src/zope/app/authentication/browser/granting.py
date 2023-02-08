@@ -20,22 +20,24 @@ __docformat__ = "reStructuredText"
 import base64
 
 import zope.schema
-from zope.component import getUtilitiesFor
-from zope.schema.vocabulary import SimpleTerm
-from zope.i18nmessageid import ZopeMessageFactory as _
-from zope.securitypolicy.interfaces import Allow, Unset, Deny
-from zope.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.securitypolicy.interfaces import IPrincipalRoleManager
-from zope.securitypolicy.interfaces import IRole
-from zope.securitypolicy.vocabulary import GrantVocabulary
-
 from zope.authentication.principal import PrincipalSource
+from zope.component import getUtilitiesFor
 from zope.formlib.interfaces import IInputWidget
 from zope.formlib.interfaces import MissingInputError
 from zope.formlib.utility import setUpWidget
 from zope.formlib.widget import renderElement
 from zope.formlib.widgets import RadioWidget
+from zope.i18nmessageid import ZopeMessageFactory as _
+from zope.schema.vocabulary import SimpleTerm
 from zope.security.interfaces import IPermission
+from zope.securitypolicy.interfaces import Allow
+from zope.securitypolicy.interfaces import Deny
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IRole
+from zope.securitypolicy.interfaces import Unset
+from zope.securitypolicy.vocabulary import GrantVocabulary
+
 
 try:
     text_type = unicode

@@ -12,12 +12,12 @@ Bob.  Initially, attempts to log in as Bob fail:
   >>> from zope.testbrowser.wsgi import Browser
   >>> bob_browser = Browser()
   >>> bob_browser.handleErrors = True
+  >>> bob_browser.raiseHttpErrors = False
   >>> bob_browser.addHeader("Authorization", "Basic Ym9iOjEyMw==")
 
   >>> bob_browser.open("http://localhost/+")
-  Traceback (most recent call last):
-  ...
-  urllib.error.HTTPError: HTTP Error 401: Unauthorized
+  >>> print(bob_browser.headers['status'])
+  401 Unauthorized
 
 
 To allow Bob to log in, we'll start by adding a principal folder to PAU:

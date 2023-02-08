@@ -16,15 +16,19 @@
 """
 __docformat__ = "reStructuredText"
 
-from zope.app.authentication.i18n import ZopeMessageFactory as _
-from zope.formlib.interfaces import IInputWidget, InputErrors
+from zope.formlib.interfaces import IInputWidget
+from zope.formlib.interfaces import InputErrors
 from zope.formlib.interfaces import ISourceQueryView
-from zope.formlib.interfaces import WidgetsError, MissingInputError
+from zope.formlib.interfaces import MissingInputError
+from zope.formlib.interfaces import WidgetsError
 from zope.formlib.utility import setUpWidgets
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema import getFieldsInOrder
-from zope.traversing.api import getName, getPath
+from zope.traversing.api import getName
+from zope.traversing.api import getPath
+
+from zope.app.authentication.i18n import ZopeMessageFactory as _
 
 
 search_label = _('search-button', 'Search')

@@ -14,40 +14,36 @@
 """Pluggable Authentication Service Tests
 """
 import doctest
-import unittest
 import re
+import unittest
 
-from zope import component
 from zope.annotation.attribute import AttributeAnnotations
 from zope.authentication.interfaces import IAuthentication
 from zope.browsermenu.menu import getFirstMenuItem
-
 from zope.component import getUtility
-from zope.component import provideUtility, provideAdapter, provideHandler
+from zope.component import provideAdapter
+from zope.component import provideHandler
+from zope.component import provideUtility
 from zope.component.eventtesting import PlacelessSetup as EventPlacelessSetup
-from zope.component.eventtesting import getEvents, clearEvents
-from zope.component.hooks import setSite
-from zope.component.hooks import setHooks
+from zope.component.eventtesting import clearEvents
+from zope.component.eventtesting import getEvents
 from zope.component.hooks import resetHooks
-from zope.interface.interfaces import IComponentLookup
+from zope.component.hooks import setHooks
+from zope.component.hooks import setSite
 from zope.component.interfaces import ISite
 from zope.component.testing import tearDown
-
 from zope.container.interfaces import ISimpleReadContainer
 from zope.container.traversal import ContainerTraversable
-
 from zope.interface import Interface
 from zope.interface import implementer
-
+from zope.interface.interfaces import IComponentLookup
 from zope.password.testing import setUpPasswordManagers
 from zope.pluggableauth.plugins.session import SessionCredentialsPlugin
-
 from zope.publisher import base
 from zope.publisher.browser import BrowserPage
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import IRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
-
 from zope.session.http import CookieClientIdManager
 from zope.session.interfaces import IClientId
 from zope.session.interfaces import IClientIdManager
@@ -56,16 +52,15 @@ from zope.session.interfaces import ISessionDataContainer
 from zope.session.session import ClientId
 from zope.session.session import PersistentSessionDataContainer
 from zope.session.session import Session
-
 from zope.site.folder import rootFolder
 from zope.site.site import LocalSiteManager
 from zope.site.site import SiteManagerAdapter
-
 from zope.testing import renormalizing
 from zope.testing.cleanup import CleanUp
-
 from zope.traversing import api as traversing
 from zope.traversing.interfaces import ITraversable
+
+from zope import component
 
 
 def setUpTraversal():
@@ -228,9 +223,7 @@ checker = renormalizing.RENormalizing([
 
 
 def test_suite():
-    flags = (doctest.NORMALIZE_WHITESPACE
-             | renormalizing.IGNORE_EXCEPTION_MODULE_IN_PYTHON2
-             | doctest.ELLIPSIS)
+    flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
     return unittest.TestSuite((
         doctest.DocTestSuite('zope.app.authentication.interfaces'),
         doctest.DocTestSuite('zope.app.authentication.password'),
