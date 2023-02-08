@@ -23,7 +23,7 @@ from zope.securitypolicy.securitymap import SecurityMap
 
 
 @implementer(IRolePermissionManager, IRolePermissionMap)
-class RolePermissionManager(object):
+class RolePermissionManager:
     """
     provide adapter that manages role permission data in an object attribute
     """

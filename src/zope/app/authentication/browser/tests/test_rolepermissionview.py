@@ -41,7 +41,7 @@ class RolePermissionView(RolePermissionView, BrowserView):
 
 
 @zope.interface.implementer(ITranslationDomain)
-class TranslationDomain(object):
+class TranslationDomain:
 
     def __init__(self, **translations):
         self.translations = translations
@@ -62,7 +62,7 @@ def definePermission(id, title=None, description=None):
     return permission
 
 
-class FakeSiteManager(object):
+class FakeSiteManager:
 
     def __init__(self, site):
         self.__parent__ = site

@@ -21,7 +21,7 @@ __docformat__ = "reStructuredText"
 from zope.password.testing import setUpPasswordManagers
 
 
-class PlacelessSetup(object):
+class PlacelessSetup:
 
     def setUp(self):
         setUpPasswordManagers()

@@ -32,12 +32,12 @@ from zope.app.authentication.i18n import ZopeMessageFactory as _
 
 
 search_label = _('search-button', 'Search')
-source_label = _(u"Source path")
-source_title = _(u"Path to the source utility")
+source_label = _("Source path")
+source_title = _("Path to the source utility")
 
 
 @implementer(ISourceQueryView)
-class QuerySchemaSearchView(object):
+class QuerySchemaSearchView:
 
     def __init__(self, context, request):
         self.context = context
@@ -60,7 +60,7 @@ class QuerySchemaSearchView(object):
         html.append('  <div class="label">')
         label = translate(source_label, context=self.request)
         title = translate(source_title, context=self.request)
-        html.append('    <label for="%s" title="%s">' % (sourcename, title))
+        html.append(f'    <label for="{sourcename}" title="{title}">')
         html.append('      %s' % label)
         html.append('    </label>')
         html.append('  </div>')

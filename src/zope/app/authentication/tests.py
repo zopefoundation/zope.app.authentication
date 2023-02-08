@@ -188,7 +188,7 @@ class ManagementViewSelector(BrowserView):
         redirect_url = item['action']
         if not redirect_url.lower().startswith(('../', 'javascript:', '++')):
             self.request.response.redirect(redirect_url)
-            return u''
+            return ''
         raise AssertionError("Should not get here")  # pragma: no cover
 
 

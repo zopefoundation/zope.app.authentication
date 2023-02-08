@@ -32,7 +32,7 @@ from zope.app.authentication import interfaces
     ILocation,
     IQueriableAuthenticator,
     interfaces.IQuerySchemaSearch)
-class QuerySchemaSearchAdapter(object):
+class QuerySchemaSearchAdapter:
     """Performs schema-based principal searches on behalf of a PAU.
 
     Delegates the search to the adapted authenticator (which also provides

@@ -17,7 +17,7 @@
 from zope.authentication.interfaces import IUnauthenticatedPrincipal
 
 
-class LoginForm(object):
+class LoginForm:
     """Mix-in class to implement login form logic"""
 
     context = None

@@ -39,7 +39,7 @@ class FunkTest(unittest.TestCase):
     layer = AppAuthenticationLayer
 
     def setUp(self):
-        super(FunkTest, self).setUp()
+        super().setUp()
         self._testapp = TestApp(self.layer.make_wsgi_app())
 
     def publish(self, path, basic=None, form=None, headers=None):
@@ -75,8 +75,8 @@ class FunkTest(unittest.TestCase):
 
         response = self.publish('/pf/@@contents.html',
                                 basic='mgr:mgrpw',
-                                form={'ids:list': [u'p1'],
-                                      'container_copy_button': u'Copy'})
+                                form={'ids:list': ['p1'],
+                                      'container_copy_button': 'Copy'})
         self.assertEqual(response.status_int, 302)
 
         # Try to paste the file
@@ -110,8 +110,8 @@ class FunkTest(unittest.TestCase):
 
         response = self.publish('/pf/@@contents.html',
                                 basic='mgr:mgrpw',
-                                form={'ids:list': [u'p1'],
-                                      'container_cut_button': u'Cut'})
+                                form={'ids:list': ['p1'],
+                                      'container_cut_button': 'Cut'})
         self.assertEqual(response.status_int, 302)
 
         # Try to paste the file
@@ -172,7 +172,7 @@ def test_suite():
         pau_prefix_and_searching,
         group_searching_with_empty_string,
         special_groups,
-        unittest.makeSuite(FunkTest),
+        unittest.defaultTestLoader.loadTestsFromTestCase(FunkTest),
         issue663,
         doctest.DocFileSuite('../schemasearch.rst'),
     ))

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 # This package is developed by the Zope Toolkit project, documented here:
-# http://docs.zope.org/zopetoolkit
+# https://zopetoolkit.readthedocs.io/
 # When developing and releasing this package, please follow the documented
 # Zope Toolkit policies as described by this documentation.
 ##############################################################################
@@ -52,7 +52,7 @@ tests_require = [
 setup(name='zope.app.authentication',
       version='5.0.dev0',
       author='Zope Corporation and Contributors',
-      author_email='zope-dev@zope.org',
+      author_email='zope-dev@zope.dev',
       description=('Principals and groups management for '
                    'the pluggable authentication utility'),
       long_description=(
@@ -91,6 +91,7 @@ setup(name='zope.app.authentication',
       keywords='zope3 authentication pluggable principal group',
       packages=find_packages('src'),
       package_dir={'': 'src'},
+      python_requires='>=3.7',
       extras_require={
           'test': tests_require,
       },

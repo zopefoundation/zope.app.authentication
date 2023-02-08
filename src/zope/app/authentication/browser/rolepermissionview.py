@@ -30,7 +30,7 @@ from zope.securitypolicy.interfaces import IRolePermissionManager
 from zope.securitypolicy.interfaces import Unset
 
 
-class RolePermissionView(object):
+class RolePermissionView:
 
     _pagetip = _("""For each permission you want to grant (or deny) to a role,
         set the entry for that permission and role to a '+' (or '-').
@@ -112,7 +112,7 @@ class RolePermissionView(object):
                     rrole = self.request.get("r%s" % ir)
                     if rrole not in roles:
                         continue
-                    setting = self.request.get("p%sr%s" % (ip, ir), None)
+                    setting = self.request.get("p{}r{}".format(ip, ir), None)
                     if setting is not None:
                         if setting == Unset.getName():
                             prm.unsetPermissionFromRole(rperm, rrole)
@@ -176,7 +176,7 @@ class RolePermissionView(object):
 
 
 @implementer(IPermission)
-class PermissionRoles(object):
+class PermissionRoles:
 
     def __init__(self, permission, context, roles):
         self._permission = permission
@@ -209,7 +209,7 @@ class PermissionRoles(object):
 
 
 @implementer(IRole)
-class RolePermissions(object):
+class RolePermissions:
 
     def __init__(self, role, context, permissions):
         self._role = role
