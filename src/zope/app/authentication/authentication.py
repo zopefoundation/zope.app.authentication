@@ -15,14 +15,14 @@
 """
 
 import zope.interface
-from zope import component
 from zope.location.interfaces import ILocation
-from zope.app.authentication import interfaces
-
 # BBB using zope.pluggableauth
 from zope.pluggableauth import PluggableAuthentication  # noqa: F401 BBB
-from zope.pluggableauth.interfaces import (
-    IQueriableAuthenticator, IPluggableAuthentication)
+from zope.pluggableauth.interfaces import IPluggableAuthentication
+from zope.pluggableauth.interfaces import IQueriableAuthenticator
+
+from zope import component
+from zope.app.authentication import interfaces
 
 
 @component.adapter(
@@ -32,7 +32,7 @@ from zope.pluggableauth.interfaces import (
     ILocation,
     IQueriableAuthenticator,
     interfaces.IQuerySchemaSearch)
-class QuerySchemaSearchAdapter(object):
+class QuerySchemaSearchAdapter:
     """Performs schema-based principal searches on behalf of a PAU.
 
     Delegates the search to the adapted authenticator (which also provides

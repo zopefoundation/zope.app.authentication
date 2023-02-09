@@ -14,5 +14,6 @@
 """PAS plugins related to HTTP"""
 
 # BBB
-from zope.pluggableauth.plugins.httpplugins import (
-    IHTTPBasicAuthRealm, HTTPBasicAuthCredentialsPlugin)
+from zope.pluggableauth.plugins.httpplugins import \
+    HTTPBasicAuthCredentialsPlugin
+from zope.pluggableauth.plugins.httpplugins import IHTTPBasicAuthRealm

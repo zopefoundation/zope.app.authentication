@@ -16,24 +16,28 @@
 """
 __docformat__ = "reStructuredText"
 
-from zope.app.authentication.i18n import ZopeMessageFactory as _
-from zope.formlib.interfaces import IInputWidget, InputErrors
+from zope.formlib.interfaces import IInputWidget
+from zope.formlib.interfaces import InputErrors
 from zope.formlib.interfaces import ISourceQueryView
-from zope.formlib.interfaces import WidgetsError, MissingInputError
+from zope.formlib.interfaces import MissingInputError
+from zope.formlib.interfaces import WidgetsError
 from zope.formlib.utility import setUpWidgets
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema import getFieldsInOrder
-from zope.traversing.api import getName, getPath
+from zope.traversing.api import getName
+from zope.traversing.api import getPath
+
+from zope.app.authentication.i18n import ZopeMessageFactory as _
 
 
 search_label = _('search-button', 'Search')
-source_label = _(u"Source path")
-source_title = _(u"Path to the source utility")
+source_label = _("Source path")
+source_title = _("Path to the source utility")
 
 
 @implementer(ISourceQueryView)
-class QuerySchemaSearchView(object):
+class QuerySchemaSearchView:
 
     def __init__(self, context, request):
         self.context = context
@@ -56,7 +60,7 @@ class QuerySchemaSearchView(object):
         html.append('  <div class="label">')
         label = translate(source_label, context=self.request)
         title = translate(source_title, context=self.request)
-        html.append('    <label for="%s" title="%s">' % (sourcename, title))
+        html.append(f'    <label for="{sourcename}" title="{title}">')
         html.append('      %s' % label)
         html.append('    </label>')
         html.append('  </div>')

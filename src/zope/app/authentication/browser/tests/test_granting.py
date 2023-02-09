@@ -13,8 +13,9 @@
 ##############################################################################
 """Security Policy Granting Views Tests"""
 
-from zope.component import testing
 import doctest
+
+from zope.component import testing
 
 
 def test_suite():

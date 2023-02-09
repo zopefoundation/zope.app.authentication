@@ -17,7 +17,6 @@ $Id$
 """
 
 import zope.app.container.browser.adding
-
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 

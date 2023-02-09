@@ -12,13 +12,15 @@
 #
 ##############################################################################
 # This package is developed by the Zope Toolkit project, documented here:
-# http://docs.zope.org/zopetoolkit
+# https://zopetoolkit.readthedocs.io/
 # When developing and releasing this package, please follow the documented
 # Zope Toolkit policies as described by this documentation.
 ##############################################################################
 """Setup for zope.app.authentication package."""
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages
+from setuptools import setup
 
 
 def read(*rnames):
@@ -48,9 +50,9 @@ tests_require = [
 ]
 
 setup(name='zope.app.authentication',
-      version='4.1.0.dev0',
+      version='5.0.dev0',
       author='Zope Corporation and Contributors',
-      author_email='zope-dev@zope.org',
+      author_email='zope-dev@zope.dev',
       description=('Principals and groups management for '
                    'the pluggable authentication utility'),
       long_description=(
@@ -72,14 +74,12 @@ setup(name='zope.app.authentication',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
           'Programming Language :: Python',
-          'Programming Language :: Python :: 2',
-          'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
-          'Programming Language :: Python :: 3.5',
-          'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: 3.7',
           'Programming Language :: Python :: 3.8',
           'Programming Language :: Python :: 3.9',
+          'Programming Language :: Python :: 3.10',
+          'Programming Language :: Python :: 3.11',
           'Programming Language :: Python :: Implementation',
           'Programming Language :: Python :: Implementation :: CPython',
           'Programming Language :: Python :: Implementation :: PyPy',
@@ -91,6 +91,7 @@ setup(name='zope.app.authentication',
       keywords='zope3 authentication pluggable principal group',
       packages=find_packages('src'),
       package_dir={'': 'src'},
+      python_requires='>=3.7',
       extras_require={
           'test': tests_require,
       },

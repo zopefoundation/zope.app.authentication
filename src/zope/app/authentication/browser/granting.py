@@ -20,22 +20,24 @@ __docformat__ = "reStructuredText"
 import base64
 
 import zope.schema
-from zope.component import getUtilitiesFor
-from zope.schema.vocabulary import SimpleTerm
-from zope.i18nmessageid import ZopeMessageFactory as _
-from zope.securitypolicy.interfaces import Allow, Unset, Deny
-from zope.securitypolicy.interfaces import IPrincipalPermissionManager
-from zope.securitypolicy.interfaces import IPrincipalRoleManager
-from zope.securitypolicy.interfaces import IRole
-from zope.securitypolicy.vocabulary import GrantVocabulary
-
 from zope.authentication.principal import PrincipalSource
+from zope.component import getUtilitiesFor
 from zope.formlib.interfaces import IInputWidget
 from zope.formlib.interfaces import MissingInputError
 from zope.formlib.utility import setUpWidget
 from zope.formlib.widget import renderElement
 from zope.formlib.widgets import RadioWidget
+from zope.i18nmessageid import ZopeMessageFactory as _
+from zope.schema.vocabulary import SimpleTerm
 from zope.security.interfaces import IPermission
+from zope.securitypolicy.interfaces import Allow
+from zope.securitypolicy.interfaces import Deny
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager
+from zope.securitypolicy.interfaces import IPrincipalRoleManager
+from zope.securitypolicy.interfaces import IRole
+from zope.securitypolicy.interfaces import Unset
+from zope.securitypolicy.vocabulary import GrantVocabulary
+
 
 try:
     text_type = unicode
@@ -60,8 +62,8 @@ class GrantWidget(RadioWidget):
     """
     orientation = "horizontal"
     _tdTemplate = (
-        u'\n<td class="%s">\n<center>\n<label for="%s" title="%s">\n'
-        u'%s\n</label>\n</center>\n</td>\n'
+        '\n<td class="%s">\n<center>\n<label for="%s" title="%s">\n'
+        '%s\n</label>\n</center>\n</td>\n'
     )
 
     def __call__(self):
@@ -80,8 +82,8 @@ class GrantWidget(RadioWidget):
         """
 
         tdClass = ''
-        id = '%s.%s' % (name, index)
-        elem = renderElement(u'input',
+        id = '{}.{}'.format(name, index)
+        elem = renderElement('input',
                              value=value,
                              name=name,
                              id=id,
@@ -98,8 +100,8 @@ class GrantWidget(RadioWidget):
         """
 
         tdClass = 'default'
-        id = '%s.%s' % (name, index)
-        elem = renderElement(u'input',
+        id = '{}.{}'.format(name, index)
+        elem = renderElement('input',
                              value=value,
                              name=name,
                              id=id,
@@ -131,7 +133,7 @@ class GrantWidget(RadioWidget):
         return " ".join(rendered_items)
 
 
-class Granting(object):
+class Granting:
 
     principal = None
 
@@ -150,11 +152,11 @@ class Granting(object):
     def status(self):
         setUpWidget(self, 'principal', self.principal_field, IInputWidget)
         if not self.principal_widget.hasInput():
-            return u''
+            return ''
         try:
             principal = self.principal_widget.getInputValue()
         except MissingInputError:
-            return u''
+            return ''
 
         self.principal = principal
 
@@ -198,7 +200,7 @@ class Granting(object):
                 getattr(self, name+'_widget'))
 
         if 'GRANT_SUBMIT' not in self.request:
-            return u''
+            return ''
 
         for role in roles:
             name = principal_token + '.role.' + role.id

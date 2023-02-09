@@ -15,7 +15,7 @@
     challenge plugins."""
 
 # BBB
-from zope.pluggableauth.plugins.session import (
-    ISessionCredentials, SessionCredentials,
-    IBrowserFormChallenger, SessionCredentialsPlugin,
-)
+from zope.pluggableauth.plugins.session import IBrowserFormChallenger
+from zope.pluggableauth.plugins.session import ISessionCredentials
+from zope.pluggableauth.plugins.session import SessionCredentials
+from zope.pluggableauth.plugins.session import SessionCredentialsPlugin

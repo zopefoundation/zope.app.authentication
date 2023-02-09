@@ -16,8 +16,9 @@
 """
 import zope.component
 import zope.interface
-from zope.testbrowser.wsgi import TestBrowserLayer
 from zope.app.wsgi.testlayer import BrowserLayer
+from zope.testbrowser.wsgi import TestBrowserLayer
+
 import zope.app.authentication
 
 

@@ -14,11 +14,9 @@
 """Backward compatibility imports for password managers."""
 
 # BBB: the password managers were moved into zope.password package.
-from zope.password.password import (
-    PlainTextPasswordManager,
-    MD5PasswordManager,
-    SHA1PasswordManager,
-    SSHAPasswordManager,
-    managers,
-)
+from zope.password.password import MD5PasswordManager
+from zope.password.password import PlainTextPasswordManager
+from zope.password.password import SHA1PasswordManager
+from zope.password.password import SSHAPasswordManager
+from zope.password.password import managers
 from zope.password.vocabulary import PasswordManagerNamesVocabulary

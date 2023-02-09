@@ -14,9 +14,10 @@
 """Improved registration UI for registering pluggable authentication utilities
 """
 
-from zope.app.authentication.i18n import ZopeMessageFactory as _
 from zope.app.component.browser.registration import AddUtilityRegistration
 from zope.authentication.interfaces import IAuthentication
+
+from zope.app.authentication.i18n import ZopeMessageFactory as _
 
 
 class AddAuthenticationRegistration(AddUtilityRegistration):

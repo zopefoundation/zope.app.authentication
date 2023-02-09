@@ -13,10 +13,10 @@
 ##############################################################################
 "Test helpers; not public API"
 
-from zope import component
-
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+
+from zope import component
 
 
 def provideUtility(provided, utility, name=''):

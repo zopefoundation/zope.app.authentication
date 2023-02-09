@@ -16,35 +16,29 @@
 import zope.interface
 import zope.schema
 import zope.security.interfaces
-from zope.app.authentication.i18n import ZopeMessageFactory as _
-
 # BBB: the password managers were moved into zope.password package.
 from zope.password.interfaces import IPasswordManager
-
 # BBB: using zope.pluggableauth
-from zope.pluggableauth.interfaces import (
-    AuthenticatedPrincipalCreated,
-    FoundPrincipalCreated,
-    IAuthenticatedPrincipalCreated,
-    IAuthenticatedPrincipalFactory,
-    IAuthenticatorPlugin,
-    ICredentialsPlugin,
-    IFoundPrincipalCreated,
-    IFoundPrincipalFactory,
-    IGroupAdded,
-    IPluggableAuthentication,
-    IPlugin,
-    IPrincipal,
-    IPrincipalCreated,
-    IPrincipalFactory,
-    IPrincipalInfo,
-    IPrincipalsAddedToGroup,
-    IPrincipalsRemovedFromGroup,
-    IQueriableAuthenticator,
-    IQuerySchemaSearch,
-)
-
+from zope.pluggableauth.interfaces import AuthenticatedPrincipalCreated
+from zope.pluggableauth.interfaces import FoundPrincipalCreated
+from zope.pluggableauth.interfaces import IAuthenticatedPrincipalCreated
+from zope.pluggableauth.interfaces import IAuthenticatedPrincipalFactory
+from zope.pluggableauth.interfaces import IAuthenticatorPlugin
+from zope.pluggableauth.interfaces import ICredentialsPlugin
+from zope.pluggableauth.interfaces import IFoundPrincipalCreated
+from zope.pluggableauth.interfaces import IFoundPrincipalFactory
+from zope.pluggableauth.interfaces import IGroupAdded
+from zope.pluggableauth.interfaces import IPluggableAuthentication
+from zope.pluggableauth.interfaces import IPlugin
+from zope.pluggableauth.interfaces import IPrincipal
+from zope.pluggableauth.interfaces import IPrincipalCreated
+from zope.pluggableauth.interfaces import IPrincipalFactory
+from zope.pluggableauth.interfaces import IPrincipalInfo
+from zope.pluggableauth.interfaces import IPrincipalsAddedToGroup
+from zope.pluggableauth.interfaces import IPrincipalsRemovedFromGroup
+from zope.pluggableauth.interfaces import IQueriableAuthenticator
+from zope.pluggableauth.interfaces import IQuerySchemaSearch
 # BBB: using zope.pluggableauth
-from zope.pluggableauth.plugins.groupfolder import (
-    GroupAdded,
-)
+from zope.pluggableauth.plugins.groupfolder import GroupAdded
+
+from zope.app.authentication.i18n import ZopeMessageFactory as _

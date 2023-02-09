@@ -15,14 +15,15 @@
 """
 
 from zope.interface import implementer
-from zope.securitypolicy.interfaces import Allow, Deny
+from zope.securitypolicy.interfaces import Allow
+from zope.securitypolicy.interfaces import Deny
 from zope.securitypolicy.interfaces import IRolePermissionManager
 from zope.securitypolicy.interfaces import IRolePermissionMap
 from zope.securitypolicy.securitymap import SecurityMap
 
 
 @implementer(IRolePermissionManager, IRolePermissionMap)
-class RolePermissionManager(object):
+class RolePermissionManager:
     """
     provide adapter that manages role permission data in an object attribute
     """

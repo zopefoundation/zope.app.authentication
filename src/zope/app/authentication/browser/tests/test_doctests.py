@@ -17,22 +17,21 @@
 
 __docformat__ = "reStructuredText"
 
+import doctest
 import re
 import unittest
-import doctest
-from zope.testing import renormalizing
 
 import transaction
-from zope.interface import directlyProvides
-from zope.exceptions.interfaces import UserError
-
-from zope.pluggableauth.factories import Principal
-from zope.app.authentication.principalfolder import PrincipalFolder
-from zope.app.authentication.principalfolder import IInternalPrincipal
-from zope.app.authentication.testing import AppAuthenticationLayer
-from zope.app.wsgi.testlayer import http
-
 from webtest import TestApp
+from zope.app.wsgi.testlayer import http
+from zope.exceptions.interfaces import UserError
+from zope.interface import directlyProvides
+from zope.pluggableauth.factories import Principal
+from zope.testing import renormalizing
+
+from zope.app.authentication.principalfolder import IInternalPrincipal
+from zope.app.authentication.principalfolder import PrincipalFolder
+from zope.app.authentication.testing import AppAuthenticationLayer
 
 
 class FunkTest(unittest.TestCase):
@@ -40,7 +39,7 @@ class FunkTest(unittest.TestCase):
     layer = AppAuthenticationLayer
 
     def setUp(self):
-        super(FunkTest, self).setUp()
+        super().setUp()
         self._testapp = TestApp(self.layer.make_wsgi_app())
 
     def publish(self, path, basic=None, form=None, headers=None):
@@ -76,8 +75,8 @@ class FunkTest(unittest.TestCase):
 
         response = self.publish('/pf/@@contents.html',
                                 basic='mgr:mgrpw',
-                                form={'ids:list': [u'p1'],
-                                      'container_copy_button': u'Copy'})
+                                form={'ids:list': ['p1'],
+                                      'container_copy_button': 'Copy'})
         self.assertEqual(response.status_int, 302)
 
         # Try to paste the file
@@ -111,8 +110,8 @@ class FunkTest(unittest.TestCase):
 
         response = self.publish('/pf/@@contents.html',
                                 basic='mgr:mgrpw',
-                                form={'ids:list': [u'p1'],
-                                      'container_cut_button': u'Cut'})
+                                form={'ids:list': ['p1'],
+                                      'container_cut_button': 'Cut'})
         self.assertEqual(response.status_int, 302)
 
         # Try to paste the file
@@ -136,9 +135,7 @@ checker = renormalizing.RENormalizing([
 
 
 def test_suite():
-    flags = (doctest.NORMALIZE_WHITESPACE
-             | renormalizing.IGNORE_EXCEPTION_MODULE_IN_PYTHON2
-             | doctest.ELLIPSIS)
+    flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
 
     def _http(query_str, *args, **kwargs):
         wsgi_app = AppAuthenticationLayer.make_wsgi_app()
@@ -175,7 +172,7 @@ def test_suite():
         pau_prefix_and_searching,
         group_searching_with_empty_string,
         special_groups,
-        unittest.makeSuite(FunkTest),
+        unittest.defaultTestLoader.loadTestsFromTestCase(FunkTest),
         issue663,
         doctest.DocFileSuite('../schemasearch.rst'),
     ))
