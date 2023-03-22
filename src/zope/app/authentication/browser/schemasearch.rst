@@ -20,7 +20,6 @@ If a plugin supports `IQuerySchemaSearch`::
   >>> class ISearchCriteria(Interface):
   ...     search = zope.schema.TextLine(title=u"Search String")
 
-  >>> from zope.interface import implements
   >>> class MySearchPlugin:
   ...     __name__ = 'searchplugin'
   ...     __parent__ = site
