@@ -18,7 +18,6 @@ First, We need to create and register a pluggable authentication utility.
   >>> print(http(r"""
   ... POST /++etc++site/default/@@contents.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 98
   ... Content-Type: application/x-www-form-urlencoded
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
   ... Referer: http://localhost/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.pluggableauth.authentication.PluggableAuthentication
@@ -38,426 +37,221 @@ First, We need to create and register a pluggable authentication utility.
 
 Register PAU.
 
-  >>> print(http(r"""
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.comment', ''),
+  ...     ('field.actions.register', 'Register')])
+  >>> print(http(b"""
   ... POST /++etc++site/default/PAU/addRegistration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 687
-  ... Content-Type: multipart/form-data; boundary=---------------------------5559795404609280911441883437
+  ... Content-Type: %b
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
   ... Referer: http://localhost/++etc++site/default/PAU/addRegistration.html
   ...
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.comment"
-  ...
-  ...
-  ... -----------------------------5559795404609280911441883437
-  ... Content-Disposition: form-data; name="field.actions.register"
-  ...
-  ... Register
-  ... -----------------------------5559795404609280911441883437--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 Add a Principal folder plugin `users` to PAU.
 
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU/+/AddPrincipalFolder.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.prefix', 'users'),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', 'users')])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU/+/AddPrincipalFolder.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 429
-  ... Content-Type: multipart/form-data; boundary=---------------------------95449631112274213651507932125
+  ... Content-Type: %b
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
   ... Referer: http://localhost/++etc++site/default/PAU/+/AddPrincipalFolder.html=
   ...
-  ... -----------------------------95449631112274213651507932125
-  ... Content-Disposition: form-data; name="field.prefix"
-  ...
-  ... users
-  ... -----------------------------95449631112274213651507932125
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------95449631112274213651507932125
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ... users
-  ... -----------------------------95449631112274213651507932125--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 Next we will add some users.
 
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.login', 'bob'),
+  ...     ('field.passwordManagerName', 'Plain Text'),
+  ...     ('field.password', '123'),
+  ...     ('field.title', 'Bob'),
+  ...     ('field.description', ''),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', '')])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 780
-  ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
+  ... Content-Type: %b
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D
   ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.login"
+  ... %b
+  ... """ % (content_type, content), handle_errors=False))
+  HTTP/1.1 303 See Other
   ...
-  ... bob
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.passwordManagerName"
+
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.login', 'bill'),
+  ...     ('field.passwordManagerName', 'Plain Text'),
+  ...     ('field.password', '123'),
+  ...     ('field.title', 'Bill'),
+  ...     ('field.description', ''),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', '')])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D HTTP/1.1
+  ... Authorization: Basic bWdyOm1ncnB3
+  ... Content-Type: %b
+  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D
   ...
-  ... Plain Text
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.password"
-  ...
-  ... 123
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Bob
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877--
-  ... """, handle_errors=False))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 
-
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.login', 'joe'),
+  ...     ('field.passwordManagerName', 'Plain Text'),
+  ...     ('field.password', '123'),
+  ...     ('field.title', 'Joe'),
+  ...     ('field.description', ''),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', '')])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 780
-  ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
+  ... Content-Type: %b
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D
   ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.login"
-  ...
-  ... bill
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.passwordManagerName"
-  ...
-  ... Plain Text
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.password"
-  ...
-  ... 123
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Bill
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 
-
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.login', 'sally'),
+  ...     ('field.passwordManagerName', 'Plain Text'),
+  ...     ('field.password', '123'),
+  ...     ('field.title', 'Sally'),
+  ...     ('field.description', ''),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', '')])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 780
-  ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
+  ... Content-Type: %b
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D
   ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.login"
-  ...
-  ... betty
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.passwordManagerName"
-  ...
-  ... Plain Text
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.password"
-  ...
-  ... 123
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Betty
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
-
-
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.login', 'betty'),
+  ...     ('field.passwordManagerName', 'Plain Text'),
+  ...     ('field.password', '123'),
+  ...     ('field.title', 'Betty'),
+  ...     ('field.description', ''),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', '')])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 780
-  ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
+  ... Content-Type: %b
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D
   ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.login"
-  ...
-  ... sally
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.passwordManagerName"
-  ...
-  ... Plain Text
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.password"
-  ...
-  ... 123
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Sally
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
-
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.login', 'mary'),
+  ...     ('field.passwordManagerName', 'Plain Text'),
+  ...     ('field.password', '123'),
+  ...     ('field.title', 'Mary'),
+  ...     ('field.description', ''),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', '')])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 780
-  ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
+  ... Content-Type: %b
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D
   ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.login"
-  ...
-  ... george
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.passwordManagerName"
-  ...
-  ... Plain Text
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.password"
-  ...
-  ... 123
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... George
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
-
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.login', 'mike'),
+  ...     ('field.passwordManagerName', 'Plain Text'),
+  ...     ('field.password', '123'),
+  ...     ('field.title', 'Mike'),
+  ...     ('field.description', ''),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', '')])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 780
-  ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
+  ... Content-Type: %b
   ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
+  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%%3D
   ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.login"
-  ...
-  ... mike
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.passwordManagerName"
-  ...
-  ... Plain Text
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.password"
-  ...
-  ... 123
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Mike
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877--
-  ... """))
-  HTTP/1.1 303 See Other
-  ...
-
-
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 780
-  ... Content-Type: multipart/form-data; boundary=---------------------------5110544421083023415453147877
-  ... Cookie: zope3_cs_6a553b3=-j7C3CdeW9sUK8BP5x97u2d9o242xMJDzJd8HCQ5AAi9xeFcGTFkAs
-  ... Referer: http://localhost/++etc++site/default/PAU/users/+/AddPrincipalInformation.html%3D
-  ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.login"
-  ...
-  ... mary
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.passwordManagerName"
-  ...
-  ... Plain Text
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.password"
-  ...
-  ... 123
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Mary
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------5110544421083023415453147877
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ...
-  ... -----------------------------5110544421083023415453147877--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 Next, We'll add out group folder plugin in PAU.
 
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU/+/AddGroupFolder.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.prefix', 'groups'),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', 'groups')])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU/+/AddGroupFolder.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 427
-  ... Content-Type: multipart/form-data; boundary=---------------------------4150524541658557772058105275
+  ... Content-Type: %b
   ... Referer: http://localhost/++etc++site/default/PAU/+/AddGroupFolder.html=
   ...
-  ... -----------------------------4150524541658557772058105275
-  ... Content-Disposition: form-data; name="field.prefix"
-  ...
-  ... groups
-  ... -----------------------------4150524541658557772058105275
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------4150524541658557772058105275
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ... groups
-  ... -----------------------------4150524541658557772058105275--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 
 Next we'll select the credentials and authenticators for the PAU:
 
-  >>> print(http(r"""
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.credentialsPlugins.to', 'U2Vzc2lvbiBDcmVkZW50aWFscw=='),
+  ...     ('field.credentialsPlugins-empty-marker', ''),
+  ...     ('field.authenticatorPlugins.to', 'dXNlcnM='),
+  ...     ('field.authenticatorPlugins.to', 'Z3JvdXBz'),
+  ...     ('field.authenticatorPlugins-empty-marker', ''),
+  ...     ('UPDATE_SUBMIT', 'Change'),
+  ...     ('field.credentialsPlugins', 'U2Vzc2lvbiBDcmVkZW50aWFscw=='),
+  ...     ('field.authenticatorPlugins', 'dXNlcnM='),
+  ...     ('field.authenticatorPlugins', 'Z3JvdXBz')])
+  >>> print(http(b"""
   ... POST /++etc++site/default/PAU/@@configure.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 1313
-  ... Content-Type: multipart/form-data; boundary=---------------------------2026736768606413562109112352
+  ... Content-Type: %b
   ... Referer: http://localhost/++etc++site/default/PAU/@@configure.html
   ...
-  ... -----------------------------2026736768606413562109112352
-  ... Content-Disposition: form-data; name="field.credentialsPlugins.to"
-  ...
-  ... U2Vzc2lvbiBDcmVkZW50aWFscw==
-  ... -----------------------------2026736768606413562109112352
-  ... Content-Disposition: form-data; name="field.credentialsPlugins-empty-marker"
-  ...
-  ...
-  ... -----------------------------2026736768606413562109112352
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins.to"
-  ...
-  ... dXNlcnM=
-  ... -----------------------------2026736768606413562109112352
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins.to"
-  ...
-  ... Z3JvdXBz
-  ... -----------------------------2026736768606413562109112352
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins-empty-marker"
-  ...
-  ...
-  ... -----------------------------2026736768606413562109112352
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Change
-  ... -----------------------------2026736768606413562109112352
-  ... Content-Disposition: form-data; name="field.credentialsPlugins"
-  ...
-  ... U2Vzc2lvbiBDcmVkZW50aWFscw==
-  ... -----------------------------2026736768606413562109112352
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins"
-  ...
-  ... dXNlcnM=
-  ... -----------------------------2026736768606413562109112352
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins"
-  ...
-  ... Z3JvdXBz
-  ... -----------------------------2026736768606413562109112352--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 200 Ok
   ...
 
@@ -465,168 +259,87 @@ Next we'll select the credentials and authenticators for the PAU:
 
 Now, we can define some groups.  Let's start with a group named "Admin":
 
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU/groups/+/AddGroupInformation.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.title', 'Admin'),
+  ...     ('field.description', ''),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', 'admin')])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU/groups/+/AddGroupInformation.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 550
-  ... Content-Type: multipart/form-data; boundary=---------------------------20619400354342370301249668954
+  ... Content-Type: %b
   ... Referer: http://localhost/++etc++site/default/PAU/groups/+/AddGroupInformation.html=
   ...
-  ... -----------------------------20619400354342370301249668954
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Admin
-  ... -----------------------------20619400354342370301249668954
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------20619400354342370301249668954
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------20619400354342370301249668954
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ... admin
-  ... -----------------------------20619400354342370301249668954--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 
 That includes Betty, Mary and Mike:
 
-  >>> print(http(r"""
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.title', 'Admin'),
+  ...     ('field.description', ''),
+  ...     ('field.principals.displayed', 'y'),
+  ...     ('field.principals.MC51c2Vycw__.query.field.search', ''),
+  ...     ('field.principals:list', 'dXNlcnMz'),
+  ...     ('field.principals:list', 'dXNlcnM3'),
+  ...     ('field.principals:list', 'dXNlcnM2'),
+  ...     ('field.principals.MC51c2Vycw__.apply', 'Apply'),
+  ...     ('field.principals.MC5ncm91cHM_.query.field.search', ''),
+  ...     ('field.principals.users6.query.field.search', ''),
+  ...     ('field.principals.MQ__.query.searchstring', 'Apply')])
+  >>> print(http(b"""
   ... POST /++etc++site/default/PAU/groups/admin/@@edit.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 1509
-  ... Content-Type: multipart/form-data; boundary=---------------------------6981402699601872602121555350
+  ... Content-Type: %b
   ... Referer: http://localhost/++etc++site/default/PAU/groups/admin/@@edit.html
   ...
-  ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Admin
-  ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.principals.displayed"
-  ...
-  ... y
-  ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.principals.MC51c2Vycw__.query.field.search"
-  ...
-  ...
-  ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.principals:list"
-  ...
-  ... dXNlcnMz
-  ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.principals:list"
-  ...
-  ... dXNlcnM3
-  ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.principals:list"
-  ...
-  ... dXNlcnM2
-  ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.principals.MC51c2Vycw__.apply"
-  ...
-  ... Apply
-  ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.principals.MC5ncm91cHM_.query.field.search"
-  ...
-  ...
-  ... -----------------------------6981402699601872602121555350
-  ... Content-Disposition: form-data; name="field.principals.MQ__.query.searchstring"
-  ...
-  ...
-  ... -----------------------------6981402699601872602121555350--
-  ... """))
+  ... %b
+  ... """ % (content_type, content), handle_errors=False))
   HTTP/1.1 200 Ok
   ...
 
 
 and a group "Power Users"
 
-
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU/groups/+/AddGroupInformation.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.title', 'Power Users'),
+  ...     ('field.description', ''),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', 'power')])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU/groups/+/AddGroupInformation.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 561
-  ... Content-Type: multipart/form-data; boundary=---------------------------168380148515549442351132560943
+  ... Content-Type: %b
   ... Referer: http://localhost/++etc++site/default/PAU/groups/+/AddGroupInformation.html=
   ...
-  ... -----------------------------168380148515549442351132560943
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Power Users
-  ... -----------------------------168380148515549442351132560943
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------168380148515549442351132560943
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------168380148515549442351132560943
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ... power
-  ... -----------------------------168380148515549442351132560943--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 with Bill and Betty as members:
 
-  >>> print(http(r"""
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.title', 'Power Users'),
+  ...     ('field.description', ''),
+  ...     ('field.principals:list', 'dXNlcnMz'),
+  ...     ('field.principals:list', 'dXNlcnMy'),
+  ...     ('field.principals.displayed', 'y'),
+  ...     ('field.principals.MC51c2Vycw__.query.field.search', ''),
+  ...     ('field.principals.MC5ncm91cHM_.query.field.search', ''),
+  ...     ('field.principals.MQ__.query.searchstring', ''),
+  ...     ('UPDATE_SUBMIT', 'Change')])
+  >>> print(http(b"""
   ... POST /++etc++site/default/PAU/groups/power/@@edit.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 1729
-  ... Content-Type: multipart/form-data; boundary=---------------------------181944013812647128322134918391
+  ... Content-Type: %b
   ... Referer: http://localhost/++etc++site/default/PAU/groups/power/@@edit.html
   ...
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Power Users
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="field.principals:list"
-  ...
-  ... dXNlcnMz
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="field.principals:list"
-  ...
-  ... dXNlcnMy
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="field.principals.displayed"
-  ...
-  ... y
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="field.principals.MC51c2Vycw__.query.field.search"
-  ...
-  ...
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="field.principals.MC5ncm91cHM_.query.field.search"
-  ...
-  ...
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="field.principals.MQ__.query.searchstring"
-  ...
-  ...
-  ... -----------------------------181944013812647128322134918391
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Change
-  ... -----------------------------181944013812647128322134918391--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 200 Ok
   ...
 

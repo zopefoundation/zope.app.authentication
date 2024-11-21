@@ -20,6 +20,7 @@ __docformat__ = "reStructuredText"
 import doctest
 import re
 import unittest
+import webtest
 
 import transaction
 from webtest import TestApp
@@ -33,7 +34,7 @@ from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.testing import AppAuthenticationLayer
 
-
+TEST_APP_FOR_ENCODING = webtest.TestApp(None)
 class FunkTest(unittest.TestCase):
 
     layer = AppAuthenticationLayer
@@ -133,6 +134,13 @@ checker = renormalizing.RENormalizing([
     (re.compile(r"u'([^']*)'"), r"'\1'"),
 ])
 
+def encodeMultipartFormdata(fields: list[tuple[str, str]], files: list | None = None) -> tuple[bytes, bytes]:
+    if files is None:
+        files = []
+    content_type, content = TEST_APP_FOR_ENCODING.encode_multipart(
+        fields, files)
+    return content_type.encode(), content
+
 
 def test_suite():
     flags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
@@ -153,6 +161,7 @@ def test_suite():
             optionflags=flags,
             globs={
                 'http': _http,
+                'encodeMultipartFormdata': encodeMultipartFormdata,
                 'getRootFolder': AppAuthenticationLayer.getRootFolder
             })
         test.layer = AppAuthenticationLayer

@@ -5,7 +5,7 @@ Changes
 5.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fix tests to support multipart 1.x+ versions.
 
 
 5.0 (2023-02-09)
