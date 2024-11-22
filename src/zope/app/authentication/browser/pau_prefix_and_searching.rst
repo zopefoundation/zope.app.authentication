@@ -7,165 +7,105 @@ PAUs that have prefixes.
 
 First we'll create a PAU with a prefix of `pau1_` and and register:
 
-  >>> print(http(r"""
-  ... POST /++etc++site/default/+/AddPluggableAuthentication.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.prefix', 'pau1_'),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', 'PAU1'),
+  ... ])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/+/AddPluggableAuthentication.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 372
-  ... Content-Type: multipart/form-data; boundary=---------------------------318183180122653
+  ... Content-Type: %b
   ...
-  ... -----------------------------318183180122653
-  ... Content-Disposition: form-data; name="field.prefix"
-  ...
-  ... pau1_
-  ... -----------------------------318183180122653
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------318183180122653
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ... PAU1
-  ... -----------------------------318183180122653--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
-  >>> print(http(r"""
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.comment', ''),
+  ...     ('field.actions.register', 'Register'),
+  ... ])
+  >>> print(http(b"""
   ... POST /++etc++site/default/PAU1/addRegistration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 591
-  ... Content-Type: multipart/form-data; boundary=---------------------------516441125097
+  ... Content-Type: %b
   ...
-  ... -----------------------------516441125097
-  ... Content-Disposition: form-data; name="field.comment"
-  ...
-  ...
-  ... -----------------------------516441125097
-  ... Content-Disposition: form-data; name="field.actions.register"
-  ...
-  ... Register
-  ... -----------------------------516441125097--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 Next we'll create and register a principal folder:
 
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU1/+/AddPrincipalFolder.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.prefix', 'users_'),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', 'Users'),
+  ... ])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU1/+/AddPrincipalFolder.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 374
-  ... Content-Type: multipart/form-data; boundary=---------------------------266241536215161
+  ... Content-Type: %b
   ...
-  ... -----------------------------266241536215161
-  ... Content-Disposition: form-data; name="field.prefix"
-  ...
-  ... users_
-  ... -----------------------------266241536215161
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------266241536215161
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ... Users
-  ... -----------------------------266241536215161--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 and add a principal that we'll later search for:
 
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU1/Users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.login', 'bob'),
+  ...     ('field.passwordManagerName', 'Plain Text'),
+  ...     ('field.password', 'bob'),
+  ...     ('field.title', 'Bob'),
+  ...     ('field.description', ''),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', ''),
+  ... ])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU1/Users/+/AddPrincipalInformation.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 686
-  ... Content-Type: multipart/form-data; boundary=---------------------------300171485226567
+  ... Content-Type: %b
   ...
-  ... -----------------------------300171485226567
-  ... Content-Disposition: form-data; name="field.login"
-  ...
-  ... bob
-  ... -----------------------------300171485226567
-  ... Content-Disposition: form-data; name="field.passwordManagerName"
-  ...
-  ... Plain Text
-  ... -----------------------------300171485226567
-  ... Content-Disposition: form-data; name="field.password"
-  ...
-  ... bob
-  ... -----------------------------300171485226567
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Bob
-  ... -----------------------------300171485226567
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------300171485226567
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------300171485226567
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ...
-  ... -----------------------------300171485226567--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 Next, we'll add and register a group folder:
 
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU1/+/AddGroupFolder.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.prefix', 'groups_'),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', 'Groups'),
+  ... ])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU1/+/AddGroupFolder.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 372
-  ... Content-Type: multipart/form-data; boundary=---------------------------17420126702455
+  ... Content-Type: %b
   ...
-  ... -----------------------------17420126702455
-  ... Content-Disposition: form-data; name="field.prefix"
-  ...
-  ... groups_
-  ... -----------------------------17420126702455
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------17420126702455
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ... Groups
-  ... -----------------------------17420126702455--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
 and add a group to search for:
 
-  >>> print(http(r"""
-  ... POST /++etc++site/default/PAU1/Groups/+/AddGroupInformation.html%3D HTTP/1.1
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.title', 'Nice People'),
+  ...     ('field.description', ''),
+  ...     ('UPDATE_SUBMIT', 'Add'),
+  ...     ('add_input_name', 'nice'),
+  ... ])
+  >>> print(http(b"""
+  ... POST /++etc++site/default/PAU1/Groups/+/AddGroupInformation.html%%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 485
-  ... Content-Type: multipart/form-data; boundary=---------------------------323081358415654
+  ... Content-Type: %b
   ...
-  ... -----------------------------323081358415654
-  ... Content-Disposition: form-data; name="field.title"
-  ...
-  ... Nice People
-  ... -----------------------------323081358415654
-  ... Content-Disposition: form-data; name="field.description"
-  ...
-  ...
-  ... -----------------------------323081358415654
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Add
-  ... -----------------------------323081358415654
-  ... Content-Disposition: form-data; name="add_input_name"
-  ...
-  ... nice
-  ... -----------------------------323081358415654--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 303 See Other
   ...
 
@@ -175,42 +115,22 @@ group.
 Before we search, we need to register the two authenticator plugins with the
 PAU:
 
-  >>> print(http(r"""
+  >>> content_type, content = encodeMultipartFormdata([
+  ...     ('field.credentialsPlugins-empty-marker', ''),
+  ...     ('field.authenticatorPlugins.to', 'R3JvdXBz'),
+  ...     ('field.authenticatorPlugins.to', 'VXNlcnM='),
+  ...     ('field.authenticatorPlugins-empty-marker', ''),
+  ...     ('UPDATE_SUBMIT', 'Change'),
+  ...     ('field.authenticatorPlugins', 'R3JvdXBz'),
+  ...     ('field.authenticatorPlugins', 'VXNlcnM='),
+  ... ])
+  >>> print(http(b"""
   ... POST /++etc++site/default/PAU1/@@configure.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 888
-  ... Content-Type: multipart/form-data; boundary=---------------------------610310492754
+  ... Content-Type: %b
   ...
-  ... -----------------------------610310492754
-  ... Content-Disposition: form-data; name="field.credentialsPlugins-empty-marker"
-  ...
-  ...
-  ... -----------------------------610310492754
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins.to"
-  ...
-  ... R3JvdXBz
-  ... -----------------------------610310492754
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins.to"
-  ...
-  ... VXNlcnM=
-  ... -----------------------------610310492754
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins-empty-marker"
-  ...
-  ...
-  ... -----------------------------610310492754
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ...
-  ... Change
-  ... -----------------------------610310492754
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins"
-  ...
-  ... R3JvdXBz
-  ... -----------------------------610310492754
-  ... Content-Disposition: form-data; name="field.authenticatorPlugins"
-  ...
-  ... VXNlcnM=
-  ... -----------------------------610310492754--
-  ... """))
+  ... %b
+  ... """ % (content_type, content)))
   HTTP/1.1 200 Ok
   ...
 
@@ -220,7 +140,6 @@ the available groups:
   >>> print(http(r"""
   ... POST /@@grant.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 191
   ... Content-Type: application/x-www-form-urlencoded
   ...
   ... field.principal.displayed=y&"""
@@ -244,7 +163,6 @@ principals:
   >>> print(http(r"""
   ... POST /@@grant.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 255
   ... Content-Type: application/x-www-form-urlencoded
   ...
   ... field.principal.displayed=y&"""

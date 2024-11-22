@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 
 import doctest
 import re
+import typing
 import unittest
 import webtest
 
@@ -134,7 +135,10 @@ checker = renormalizing.RENormalizing([
     (re.compile(r"u'([^']*)'"), r"'\1'"),
 ])
 
-def encodeMultipartFormdata(fields: list[tuple[str, str]], files: list | None = None) -> tuple[bytes, bytes]:
+
+def encodeMultipartFormdata(
+        fields: typing.List[typing.Tuple[str, str]],
+        files: typing.Optional[list] = None) -> typing.Tuple[bytes, bytes]:
     if files is None:
         files = []
     content_type, content = TEST_APP_FOR_ENCODING.encode_multipart(
