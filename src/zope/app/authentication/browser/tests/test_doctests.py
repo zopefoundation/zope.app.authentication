@@ -21,9 +21,9 @@ import doctest
 import re
 import typing
 import unittest
-import webtest
 
 import transaction
+import webtest
 from webtest import TestApp
 from zope.app.wsgi.testlayer import http
 from zope.exceptions.interfaces import UserError
@@ -35,7 +35,10 @@ from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.testing import AppAuthenticationLayer
 
+
 TEST_APP_FOR_ENCODING = webtest.TestApp(None)
+
+
 class FunkTest(unittest.TestCase):
 
     layer = AppAuthenticationLayer
