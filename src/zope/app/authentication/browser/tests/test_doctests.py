@@ -19,12 +19,11 @@ __docformat__ = "reStructuredText"
 
 import doctest
 import re
-import typing
 import unittest
 
 import transaction
-import webtest
 from webtest import TestApp
+from zope.app.wsgi.testlayer import encodeMultipartFormdata
 from zope.app.wsgi.testlayer import http
 from zope.exceptions.interfaces import UserError
 from zope.interface import directlyProvides
@@ -34,9 +33,6 @@ from zope.testing import renormalizing
 from zope.app.authentication.principalfolder import IInternalPrincipal
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.testing import AppAuthenticationLayer
-
-
-TEST_APP_FOR_ENCODING = webtest.TestApp(None)
 
 
 class FunkTest(unittest.TestCase):
@@ -137,16 +133,6 @@ checker = renormalizing.RENormalizing([
     (re.compile(r"HTTP/1\.0 401 .*"), "HTTP/1.1 401 Unauthorized"),
     (re.compile(r"u'([^']*)'"), r"'\1'"),
 ])
-
-
-def encodeMultipartFormdata(
-        fields: typing.List[typing.Tuple[str, str]],
-        files: typing.Optional[list] = None) -> typing.Tuple[bytes, bytes]:
-    if files is None:
-        files = []
-    content_type, content = TEST_APP_FOR_ENCODING.encode_multipart(
-        fields, files)
-    return content_type.encode(), content
 
 
 def test_suite():
