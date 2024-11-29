@@ -5,9 +5,9 @@ Changes
 5.1 (unreleased)
 ----------------
 
-* Add support for Python 3.12, 3.13.
+- Add support for Python 3.12, 3.13.
 
-* Drop support for Python 3.7.
+- Drop support for Python 3.7.
 
 - Fix tests to support multipart 1.x+ versions.
 
