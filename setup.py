@@ -33,7 +33,7 @@ tests_require = [
     'zope.app.rotterdam >= 4.0',
     'zope.app.basicskin >= 4.0',
     'zope.app.form >= 5.0',
-    'zope.app.wsgi >= 5.3.dev0',
+    'zope.app.wsgi[testlayer] >= 5.3',
     'zope.app.schema',
 
     'zope.formlib',
