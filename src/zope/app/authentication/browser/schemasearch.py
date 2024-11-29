@@ -47,7 +47,7 @@ class QuerySchemaSearchView:
         schema = self.context.schema
         sourcename = getName(self.context)
         sourcepath = getPath(self.context)
-        setUpWidgets(self, schema, IInputWidget, prefix=name+'.field')
+        setUpWidgets(self, schema, IInputWidget, prefix=name + '.field')
         html = []
 
         # add sub title for source search field
@@ -73,7 +73,7 @@ class QuerySchemaSearchView:
         html.append('<div class="row">')
 
         for field_name, _field in getFieldsInOrder(schema):
-            widget = getattr(self, field_name+'_widget')
+            widget = getattr(self, field_name + '_widget')
 
             # for each field add label...
             html.append('  <div class="label">')

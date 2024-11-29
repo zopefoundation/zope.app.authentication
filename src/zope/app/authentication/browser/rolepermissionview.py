@@ -112,7 +112,7 @@ class RolePermissionView:
                     rrole = self.request.get("r%s" % ir)
                     if rrole not in roles:
                         continue
-                    setting = self.request.get("p{}r{}".format(ip, ir), None)
+                    setting = self.request.get(f"p{ip}r{ir}", None)
                     if setting is not None:
                         if setting == Unset.getName():
                             prm.unsetPermissionFromRole(rperm, rrole)
