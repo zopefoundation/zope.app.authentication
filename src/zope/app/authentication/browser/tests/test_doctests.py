@@ -23,6 +23,7 @@ import unittest
 
 import transaction
 from webtest import TestApp
+from zope.app.wsgi.testlayer import encodeMultipartFormdata
 from zope.app.wsgi.testlayer import http
 from zope.exceptions.interfaces import UserError
 from zope.interface import directlyProvides
@@ -153,6 +154,7 @@ def test_suite():
             optionflags=flags,
             globs={
                 'http': _http,
+                'encodeMultipartFormdata': encodeMultipartFormdata,
                 'getRootFolder': AppAuthenticationLayer.getRootFolder
             })
         test.layer = AppAuthenticationLayer
