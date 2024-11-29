@@ -47,7 +47,7 @@ except NameError:
 settings_vocabulary = GrantVocabulary([
     SimpleTerm(Allow, token="allow", title=_('Allow')),
     SimpleTerm(Unset, token="unset", title=_('Unset')),
-    SimpleTerm(Deny,  token='deny',  title=_('Deny')),
+    SimpleTerm(Deny, token='deny', title=_('Deny')),
 ])
 
 
@@ -82,7 +82,7 @@ class GrantWidget(RadioWidget):
         """
 
         tdClass = ''
-        id = '{}.{}'.format(name, index)
+        id = f'{name}.{index}'
         elem = renderElement('input',
                              value=value,
                              name=name,
@@ -100,7 +100,7 @@ class GrantWidget(RadioWidget):
         """
 
         tdClass = 'default'
-        id = '{}.{}'.format(name, index)
+        id = f'{name}.{index}'
         elem = renderElement('input',
                              value=value,
                              name=name,
@@ -197,7 +197,7 @@ class Granting:
             setUpWidget(self, name, field, IInputWidget,
                         principal_perms.getSetting(perm.id, principal))
             self.permissions.append(
-                getattr(self, name+'_widget'))
+                getattr(self, name + '_widget'))
 
         if 'GRANT_SUBMIT' not in self.request:
             return ''
@@ -225,7 +225,7 @@ class Granting:
         for perm in perms:
             if perm.id == 'zope.Public':
                 continue
-            name = principal_token + '.permission.'+perm.id
+            name = principal_token + '.permission.' + perm.id
             perm_widget = getattr(self, name + '_widget')
             if perm_widget.hasInput():
                 try:

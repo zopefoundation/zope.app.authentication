@@ -73,7 +73,7 @@ class Test(PlacefulSetup, unittest.TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         defineRole('manager', Message('Manager', 'testdomain'))
-        defineRole('member',  Message('Member', 'testdomain'))
+        defineRole('member', Message('Member', 'testdomain'))
         definePermission('read', Message('Read', 'testdomain'))
         definePermission('write', Message('Write', 'testdomain'))
         site = RolePermissionManager()

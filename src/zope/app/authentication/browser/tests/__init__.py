@@ -56,4 +56,5 @@ def browserViewProviding(for_, factory, providing, layer=IDefaultBrowserLayer):
 def provideMultiView(for_, type, providing, name, factory, layer=None):
     if layer is None:
         layer = type
-    provideAdapter(for_[0], providing, factory, name, tuple(for_[1:])+(layer,))
+    provideAdapter(for_[0], providing, factory,
+                   name, tuple(for_[1:]) + (layer,))
