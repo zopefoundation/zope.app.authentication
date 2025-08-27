@@ -19,7 +19,6 @@
 """Setup for zope.app.authentication package."""
 import os
 
-from setuptools import find_packages
 from setuptools import setup
 
 
@@ -46,7 +45,7 @@ tests_require = [
     'zope.site',
     'zope.testbrowser >= 5.2',
     'zope.testing',
-    'zope.testrunner'
+    'zope.testrunner >= 6.4'
 ]
 
 setup(name='zope.app.authentication',
@@ -89,13 +88,10 @@ setup(name='zope.app.authentication',
           'Framework :: Zope :: 3',
       ],
       keywords='zope3 authentication pluggable principal group',
-      packages=find_packages('src'),
-      package_dir={'': 'src'},
       python_requires='>=3.9',
       extras_require={
           'test': tests_require,
       },
-      namespace_packages=['zope', 'zope.app'],
       install_requires=[
           'setuptools',
           'zope.authentication',
