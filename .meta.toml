@@ -2,7 +2,7 @@
 # https://github.com/zopefoundation/meta/tree/master/config/pure-python
 [meta]
 template = "pure-python"
-commit-id = "baf6089f"
+commit-id = "f97912cf"
 
 [python]
 with-pypy = true
@@ -30,9 +30,6 @@ additional-config = [
     "    src/zope/app/authentication/principalfolder.py: F401",
     "    src/zope/app/authentication/session.py: F401",
     ]
-
-[tox]
-use-flake8 = true
 
 [manifest]
 additional-rules = [
