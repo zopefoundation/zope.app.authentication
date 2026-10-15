@@ -1,4 +1,4 @@
-<configure 
+<configure
     xmlns="http://namespaces.zope.org/browser"
     i18n_domain="zope"
     >
@@ -52,4 +52,4 @@
     add="zope.ManageServices"
     />
 
-</configure> 
+</configure>

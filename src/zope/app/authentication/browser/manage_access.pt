@@ -49,7 +49,7 @@
 
       <tbody tal:repeat="perm view/permissionRoles">
       <tr class="row-normal"
-          tal:attributes="class 
+          tal:attributes="class
              python:path('repeat/perm/even') and 'row-normal' or 'row-hilite'">
         <td align="left" nowrap="nowrap">
           <div class="list-item">

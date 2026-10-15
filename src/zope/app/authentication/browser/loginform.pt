@@ -10,7 +10,7 @@
     </p>
 
     <p i18n:translate="" tal:condition="not:view/unauthenticated">
-      You are not authorized to perform this action. However, you may login as a 
+      You are not authorized to perform this action. However, you may login as a
       different user who is authorized.
     </p>
 
@@ -29,14 +29,14 @@
           <input type="password" name="password" id="password" />
         </div>
       </div>
-    
+
       <div class="row">
-        <input class="form-element" type="submit" 
+        <input class="form-element" type="submit"
                name="SUBMIT" value="Log in" i18n:attributes="value login-button" />
       </div>
 
       <input type="hidden" name="camefrom"
-             tal:condition="view/camefrom" 
+             tal:condition="view/camefrom"
              tal:attributes="value view/camefrom" />
 
     </form>
