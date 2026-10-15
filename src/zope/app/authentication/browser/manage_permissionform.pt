@@ -22,12 +22,12 @@
      tal:condition="status"
      tal:content="status" />
 
-  <div tal:define="perm 
+  <div tal:define="perm
       python:view.permissionForID(request.get('permission_to_manage'))">
 
     <p class="form-text" i18n:translate="">
       Roles which are granted the permission
-      <strong tal:content="perm/title" 
+      <strong tal:content="perm/title"
           i18n:name="perm_title" i18n:translate="">Change DTML Methods</strong>
       (id: <strong tal:content="perm/id"
           i18n:name="perm_id">Zope.Some.Permission</strong>)
@@ -40,7 +40,7 @@
 
         <div class="form-element">
 
-          <table width="100%" cellspacing="0" cellpadding="2" border="0" 
+          <table width="100%" cellspacing="0" cellpadding="2" border="0"
               nowrap="nowrap">
 
             <tr class="list-header">
@@ -81,7 +81,7 @@
       </div>
 
       <div class="form-element">
-        <input class="form-element" type="submit" name="SUBMIT_PERMS" 
+        <input class="form-element" type="submit" name="SUBMIT_PERMS"
             value="Save Changes" i18n:attributes="value save-changes-button"/>
       </div>
     </form>

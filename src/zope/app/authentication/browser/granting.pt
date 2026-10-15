@@ -16,7 +16,7 @@
     <div tal:condition="view/principal">
 
       <h2 i18n:translate="">Grants for the selected principal</h2>
-      <input type="submit" name="GRANT_SUBMIT" value="Change" 
+      <input type="submit" name="GRANT_SUBMIT" value="Change"
              i18n:attributes="value grant-submit" />
 
       <table width="100%" border="0">
@@ -75,7 +75,7 @@
           </td>
         </tr>
       </table>
-      <input type="submit" name="GRANT_SUBMIT" value="Change" 
+      <input type="submit" name="GRANT_SUBMIT" value="Change"
              i18n:attributes="value grant-submit" />
 
     </div>
